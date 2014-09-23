@@ -3,7 +3,7 @@ redlib
 
 部署时与yii同级目录。
 
-- index.php 入口文件
+## index.php 入口文件
 <pre>
 defined('YII_PATH') or define('YII_PATH',dirname(\_\_FILE\_\_).DIRECTORY_SEPARATOR.'framework');
 defined('YII_DEBUG') or define('YII_DEBUG',true);
@@ -20,7 +20,7 @@ Yii::createWebApplication($config)->run();
 
 > 你只需要加载 red.php 便可以引入Yii，前提是需要在头文件中定义YII_PATH宏。
 
-- packages.php 静态资源管理
+## packages.php 静态资源管理
 <pre>
 return array(
 	'jquery'=>array(
@@ -40,7 +40,7 @@ return array(
 <p>Yii::app()->clientScript->registerPackage('admin');</p>
 <p>red大多数时候并不希望Yii注册jQuery，如果你发现Yii注册了jQuery，不妨加上 CClientScript::POS_END 试试</p>
 
-- RedAction action就像controller
+## RedAction action就像controller
 <pre>
 class Action extends RedAction{
     public function run(){
@@ -51,7 +51,7 @@ class Action extends RedAction{
 
 > 你可以不需要先通过$this->controller访问controller的方法或者属性了。
 
-- 两个filters 访问过滤
+## 两个filters 访问过滤
 <pre>
 class IsAjaxRequest extends CFilter{
 	public function preFilter($filterChain){
@@ -77,13 +77,13 @@ class IsGuest extends CFilter{
 
 > 你可以轻松自如的控制是否允许ajax、http访问，是否允许游客访问。
 
-- 其他各种方法，请看代码吧
+## 其他各种方法，请看代码吧
 
-- Sae支持
+## Sae支持
 <p>在Sae的支持上，主要做了Db、Cache、Log、Upload、Assets的策略修改。</p>
 <p>维护了一个没有实际作用的redlib/sae/lib库，一切只是为了代码提示</p>
 
-- thrift支持 - Service
+## thrift支持 - Service
 <p>你需要修改头文件</p>
 <pre>
 defined('YII_PATH') or define('YII_PATH',dirname(\_\_FILE\_\_).DIRECTORY_SEPARATOR.'framework');
@@ -111,7 +111,7 @@ class HelloworldServiceController extends TController implements HelloworldServi
 
 > 这里需要注意的是，你不需要实现任何actionX，因为所有请求都交由actionIndex进行处理，他会帮你完成你想做的事情。
 
-- thrift支持 - Client
+## thrift支持 - Client
 <p>你需要在配置里加上thriftClient</p>
 <pre>
 'components'=>array(
