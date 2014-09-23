@@ -10,7 +10,7 @@ defined('YII_DEBUG') or define('YII_DEBUG',true);
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL',3);
 $red = dirname(\_\_FILE\_\_).'/redlib/red.php';
 require_once($red);
-// 可以根据Yii::craeteXApplication()加载对应的配置文件
+// 可以根据Yii::craeteXApplication()加载对应的配置文件。
 $config = dirname(\_\_FILE\_\_).'/protected/config/main.php';
 Yii::createWebApplication($config)->run();
 // YII::createRedWebApplication($config)->run();
@@ -36,9 +36,9 @@ return array(
 );
 </pre>
 
-> <p>这个是一个简单的例子，将packages.php置于protected/config内，便可以轻松的使用以下代码进行访问，Yii会自动处理其中的依赖</p>
+> <p>这个是一个简单的例子，将packages.php置于protected/config内，便可以轻松的使用以下代码进行访问，Yii会自动处理其中的依赖。</p>
 <p>Yii::app()->clientScript->registerPackage('admin');</p>
-<p>red大多数时候并不希望Yii注册jQuery，如果你发现Yii注册了jQuery，不妨加上 CClientScript::POS_END 试试</p>
+<p>red大多数时候并不希望Yii注册jQuery，如果你发现Yii注册了jQuery，不妨加上 CClientScript::POS_END 试试。</p>
 
 ## RedAction action就像controller
 <pre>
@@ -81,7 +81,7 @@ class IsGuest extends CFilter{
 
 ## Sae支持
 <p>在Sae的支持上，主要做了Db、Cache、Log、Upload、Assets的策略修改。</p>
-<p>维护了一个没有实际作用的redlib/sae/lib库，一切只是为了代码提示</p>
+<p>维护了一个没有实际作用的redlib/sae/lib库，一切只是为了代码提示。</p>
 
 ## thrift支持 - Service
 <p>你需要修改头文件</p>
