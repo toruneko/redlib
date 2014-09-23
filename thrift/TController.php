@@ -101,6 +101,14 @@ class TController extends CBaseController{
         return false;
     }
 
+    /**
+     * 是否允许http请求
+     * @return boolean
+     */
+    public function allowHttpRequest(){
+        return true;
+    }
+
     public function behaviors(){
         return array();
     }
