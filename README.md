@@ -5,13 +5,13 @@ redlib
 
 ## index.php 入口文件
 <pre>
-defined('YII_PATH') or define('YII_PATH',dirname(\_\_FILE\_\_).DIRECTORY_SEPARATOR.'framework');
+defined('YII_PATH') or define('YII_PATH',dirname(__FILE__).DIRECTORY_SEPARATOR.'framework');
 defined('YII_DEBUG') or define('YII_DEBUG',true);
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL',3);
-$red = dirname(\_\_FILE\_\_).'/redlib/red.php';
+$red = dirname(__FILE__).'/redlib/red.php';
 require_once($red);
 // 可以根据Yii::craeteXApplication()加载对应的配置文件。
-$config = dirname(\_\_FILE\_\_).'/protected/config/main.php';
+$config = dirname(__FILE__).'/protected/config/main.php';
 Yii::createWebApplication($config)->run();
 // YII::createRedWebApplication($config)->run();
 // YII::createSaeWebApplication($config)->run();
@@ -86,13 +86,13 @@ class IsGuest extends CFilter{
 ## thrift支持 - Service
 <p>你需要修改头文件</p>
 <pre>
-defined('YII_PATH') or define('YII_PATH',dirname(\_\_FILE\_\_).DIRECTORY_SEPARATOR.'framework');
+defined('YII_PATH') or define('YII_PATH',dirname(__FILE__).DIRECTORY_SEPARATOR.'framework');
 defined('YII_DEBUG') or define('YII_DEBUG',true);
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL',3);
-$red = dirname(\_\_FILE\_\_).'/redlib/red.php';
+$red = dirname(__FILE__).'/redlib/red.php';
 require_once($red);
 // 可以根据Yii::craeteXApplication()加载对应的配置文件
-$config = dirname(\_\_FILE\_\_).'/protected/config/thrift.php';
+$config = dirname(__FILE__).'/protected/config/thrift.php';
 YII::createThriftWebApplication($config)->run();
 </pre>
 <p>继承TController，并实现接口</p>
