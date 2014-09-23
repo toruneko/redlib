@@ -59,11 +59,15 @@ class RedController extends CController{
 		$actions = $this->getActions();
 		$return = array();
         $module = $this->getModule();
-		foreach($actions as $action){
-            if($module === null){
-                $return[$action] = "application.controllers.{$this->id}.".ucfirst($action)."Action";
+		foreach($actions as $index => $action){
+            if(is_numeric($index)){
+                if($module === null){
+                    $return[$action] = "application.controllers.{$this->id}.".ucfirst($action)."Action";
+                }else{
+                    $return[$action] = $module->getId().".controllers.{$this->id}.".ucfirst($action)."Action";
+                }
             }else{
-                $return[$action] = $module->getId().".controllers.{$this->id}.".ucfirst($action)."Action";
+                $return[$index] = $action;
             }
 		}
 		return $return;
