@@ -142,4 +142,4 @@ class TestClientController extends RedController{
 }
 </pre>
 
-> 为了解除框架对HelloworldServiceClient的耦合，这句 $this->app->thrift->build($client); 代理必不可少。
+> 为了解除框架对Client的耦合，这句 $this->app->thrift->build($client); 代理必不可少。
