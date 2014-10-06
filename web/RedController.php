@@ -21,6 +21,8 @@ class RedController extends CController{
 	public $user;
 	/* script resource */
 	public $assets;
+    /* client script */
+    public $cs;
 	/*
 	 * @see CController::init()
 	*/
@@ -28,6 +30,7 @@ class RedController extends CController{
 		$this->app = Yii::app();
 		$this->request = $this->app->getRequest();
 		$this->user = $this->app->getUser();
+        $this->cs = $this->app->clientScript;
 		$this->assets = Yii::app()->getAssetManager()->getBaseUrl().'/';
 	}
 	
@@ -62,7 +65,7 @@ class RedController extends CController{
 		foreach($actions as $index => $action){
             if(is_numeric($index)){
                 if($module === null){
-                    $return[$action] = "application.controllers.{$this->id}.".ucfirst($action)."Action";
+                    $return[$action] = "app.controllers.{$this->id}.".ucfirst($action)."Action";
                 }else{
                     $return[$action] = $module->getId().".controllers.{$this->id}.".ucfirst($action)."Action";
                 }

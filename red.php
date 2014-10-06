@@ -82,6 +82,8 @@ class Yii extends YiiBase{
 		'SaeHttpSession' => '/sae/web/SaeHttpSession.php',
 		'SaeUploadedFile' => '/sae/web/SaeUploadedFile.php',
 		'SaeWebApplication' => '/sae/web/SaeWebApplication.php',
+        'RedSaeCounter' => '/sae/lib/SaeCounter.php',
+        'RedSaeSegment' => '/sae/lib/SaeSegment.php',
 
         'TApplication' => '/thrift/TApplication.php',
         'TController' => '/thrift/TController.php',

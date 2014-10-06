@@ -1,39 +1,19 @@
 <?php
 /**
- * SAE邮件服务
- *
- * @package sae
- * @version $Id$
- * @author lijun
+ * @file: SaeCounter.php
+ * @author: Toruneko<daijianhao@zhuabjie.com>
+ * @date: 2014-9-24
+ * @desc: 计数器
  */
- 
- 
-/**
- * SAE计数器服务
- *
- * <code>
- * <?php
- * $c = new SaeCounter();
- * $c->create('c1');  //创建计数器c1 创建成功返回true 如果该名字已被占用将返回false
- * $c->set('c1',100); // 返回true
- * $c->incr('c1'); // 返回101
- * $c->get('c1'); // 返回c1的值101
- * $c->decr('c1'); // 返回100
- * ?>
- * </code>
- *
- * @author  chenlei
- * @package sae
- */
-class SaeCounter extends SaeObject
-{
-    /**
-     * 构造函数
-     */
-    public function __construct()
-    {
+class RedSaeCounter extends CApplicationComponent{
+    private $_counter = null;
+
+    public function init(){
+        parent::init();
+
+        $this->_counter = new SaeCounter();
     }
- 
+
     /**
      * 增加一个计数器
      *
@@ -41,8 +21,8 @@ class SaeCounter extends SaeObject
      * @param int $value 计数器初始值，默认值为0
      * @return bool 成功返回true，失败返回false（计数器已存在返回false）
      */
-    public function create($name, $value = 0)
-    {
+    public function create($name, $value = 0){
+        return $this->_counter->create($name, $value);
     }
  
     /**
@@ -51,8 +31,8 @@ class SaeCounter extends SaeObject
      * @param string $name 计数器名称
      * @return bool 成功返回true，失败返回false（计数器不存在返回false）
      */
-    public function remove($name)
-    {
+    public function remove($name){
+        return $this->_counter->remove($name);
     }
  
     /**
@@ -61,8 +41,8 @@ class SaeCounter extends SaeObject
      * @param string $name 计数器名称
      * @return bool 存在返回true，不存在返回false
      */
-    public function exists($name)
-    {
+    public function exists($name){
+        return $this->_counter->exists($name);
     }
  
     /**
@@ -70,8 +50,8 @@ class SaeCounter extends SaeObject
      *
      * @return array|bool成功返回数组array，失败返回false
      */
-    public function listAll()
-    {
+    public function listAll(){
+        return $this->_counter->listAll();
     }
  
     /**
@@ -79,8 +59,8 @@ class SaeCounter extends SaeObject
      *
      * @return int|bool成功返回计数器个数，失败返回false
      */
-    public function length()
-    {
+    public function length(){
+        return $this->_counter->length();
     }
  
     /**
@@ -89,8 +69,8 @@ class SaeCounter extends SaeObject
      * @param string $name 计数器名称
      * @return int|bool成功返回该计数器的值，失败返回false
      */
-    public function get($name)
-    {
+    public function get($name){
+        return $this->_counter->get($name);
     }
  
     /**
@@ -100,8 +80,8 @@ class SaeCounter extends SaeObject
      * @param int $value 计数器的值
      * @return bool 成功返回true，失败返回false
      */
-    public function set($name, $value)
-    {
+    public function set($name, $value){
+        return $this->_counter->set($name, $value);
     }
  
     /**
@@ -110,8 +90,8 @@ class SaeCounter extends SaeObject
      * @param array $names 计数器名称数组，array($name1, $name2, ...)
      * @return array|bool成功返回关联数组，失败返回false
      */
-    public function mget($names)
-    {
+    public function mget($names){
+        return $this->_counter->mget($names);
     }
  
     /**
@@ -119,8 +99,8 @@ class SaeCounter extends SaeObject
      *
      * @return array|bool成功返回关联数组，失败返回false
      */
-    public function getall()
-    {
+    public function getall(){
+        return $this->_counter->getall();
     }
  
     /**
@@ -130,8 +110,8 @@ class SaeCounter extends SaeObject
      * @param int $value 计数器增加值
      * @return int|bool成功返回该计数器的当前值，失败返回false（计数器不存在返回false）
      */
-    public function incr($name, $value = 1)
-    {
+    public function incr($name, $value = 1){
+        return $this->_counter->incr($name, $value);
     }
  
     /**
@@ -141,7 +121,7 @@ class SaeCounter extends SaeObject
      * @param int $value 计数器减少值
      * @return int|bool成功返回该计数器的当前值，失败返回false（计数器不存在返回false）
      */
-    public function decr($name, $value = 1)
-    {
+    public function decr($name, $value = 1){
+        return $this->_counter->decr($name, $value);
     }
 }

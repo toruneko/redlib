@@ -20,7 +20,9 @@ class ThriftService extends CApplicationComponent{
     private $_controller = null;
     private $_interface  = array();
 
-    function __construct(){
+    public function init(){
+        parent::init();
+
         $stream = new TPhpStream(TPhpStream::MODE_R | TPhpStream::MODE_W);
         $transport = new TBufferedTransport($stream);
         $this->_input = $this->_output = new TBinaryProtocol($transport, TRUE, TRUE);
