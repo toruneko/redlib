@@ -1,30 +1,107 @@
 <?php
 /**
- * File: SaeSegment.php
- * User: daijianhao@zhubajie.com
- * Date: 14-10-6 0:42
- * Description: 分词服务
+ * SAE 中文分词服务
+ *
+ * @package sae
+ * @version $Id$
+ * @author Elmer Zhang
  */
-class RedSaeSegment extends CApplicationComponent{
-    private $_segment = null;
 
-    public function init(){
-        parent::init();
 
-        $this->_segment = new SaeSegment();
+
+/**
+ * SAE 中文分词服务<br />
+ *
+ * <code>
+ * <?php
+ * $str = "明天星期天";
+ * $seg = new SaeSegment();
+ * $ret = $seg->segment($str, 1);
+ *
+ * print_r($ret);    //输出
+ *
+ * // 失败时输出错误码和错误信息
+ * if ($ret === false)
+ *         var_dump($seg->errno(), $seg->errmsg());
+ * ?>
+ * </code>
+ *
+ * 错误码参考：
+ *  - errno: 0         成功
+ *  - errno: -1     服务初始化出错，服务器没有正常启动
+ *  - errno: -2     错误的参数输入
+ *  - errno: -3     文本内容长度为0
+ *  - errno: -4     其他错误
+ *  - errno: 607     服务未初始化
+ *
+ * @package sae
+ * @author Elmer Zhang
+ *
+ */
+class SaeSegment extends SaeObject
+{
+    private $_errno = SAE_Success;
+    private $_errmsg = "OK";
+    private $_errmsgs = array(
+        -1 => "word segmentation service internal error",
+        -2 => "parameters (word_tag, encoding) error.",
+        -3 => "context can not be empty",
+        -4 => "unknown error",
+        607 => "service is not enabled",
+    );
+    private $_encodings = array('GBK', 'UTF-8', 'UCS-2');
+
+    /**
+     * @ignore
+     */
+    const baseurl = "http://segment.sae.sina.com.cn/urlclient.php";
+
+    /**
+     * 构造对象
+     *
+     */
+    function __construct() {
     }
 
     /**
      * 执行分词
      *
      * @param string context 需要分词的文本，目前限制文本大小最大为10KB。
-     * @param int word_tag 用来标识返回的结果是否含有标注词性字段。0 表示不标注，1 表示标注词性，默认为0。(词性定义参见下面的常量)
+     * @param int context 用来标识返回的结果是否含有标注词性字段。0 表示不标注，1 表示标注词性，默认为0。(词性定义参见下面的常量)
      * @param string encoding 传入的文件编码格式：GB18030、UTF-8、UCS-2。默认为UTF-8
      * @return array|bool成功以数组格式返回分词结果，失败返回false.
      * @author Elmer Zhang
      */
-    public function segment($context, $word_tag = 0, $encoding = 'UTF-8'){
-        return $this->_segment->segment($context, $word_tag, $encoding);
+    function segment($context, $word_tag = 0, $encoding = 'UTF-8') {
+        $post = array();
+        $params = array();
+
+        if ( trim( $context ) === '' ) {
+            $this->_errno = -3;
+            $this->_errmsg = $this->_errmsgs[-3];
+            return false;
+        } else {
+            $post['context'] = $context;
+        }
+
+        $params['word_tag'] = $word_tag ? 1 : 0;
+
+        $encoding = strtoupper(trim($encoding));
+        if ( !in_array( $encoding, $this->_encodings ) ) {
+            $params['encoding'] = 'UTF-8';
+        } else {
+            $params['encoding'] = $encoding;
+        }
+
+        $ret = $this->postData($post, $params);
+        if ( $encoding != 'UTF-8' && !empty($ret) ) {
+            foreach ($ret as $k => $v) {
+                $v['word'] = mb_convert_encoding( $v['word'], $encoding, 'UTF-8' );
+                $ret[$k] = $v;
+            }
+        }
+
+        return $ret;
     }
 
     /**
@@ -34,7 +111,7 @@ class RedSaeSegment extends CApplicationComponent{
      * @author Elmer Zhang
      */
     public function errno() {
-        return $this->_segment->errno();
+        return $this->_errno;
     }
 
     /**
@@ -44,7 +121,55 @@ class RedSaeSegment extends CApplicationComponent{
      * @author Elmer Zhang
      */
     public function errmsg() {
-        return $this->_segment->errmsg();
+        return $this->_errmsg;
+    }
+
+    private function postData($post, $params) {
+        $url = self::baseurl . '?' . http_build_query( $params );
+        $s = curl_init();
+        if (is_array($post)) {
+            $post = http_build_query($post);
+        }
+        curl_setopt($s,CURLOPT_URL,$url);
+        curl_setopt($s,CURLOPT_HTTP_VERSION,CURL_HTTP_VERSION_1_0);
+        curl_setopt($s,CURLOPT_TIMEOUT,5);
+        curl_setopt($s,CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($s,CURLINFO_HEADER_OUT, true);
+        curl_setopt($s,CURLOPT_POST,true);
+        curl_setopt($s,CURLOPT_POSTFIELDS,$post);
+        $ret = curl_exec($s);
+        $info = curl_getinfo($s);
+        curl_close($s);
+
+        if(empty($info['http_code'])) {
+            $this->_errno = -4;
+            $this->_errmsg = "can not reach word segmentation server";
+        } else if($info['http_code'] == 607) {
+            $this->_errno = 607;
+            $this->_errmsg = $this->_errmsgs[607];
+        } else if($info['http_code'] != 200) {
+            $this->_errno = -1;
+            $this->_errmsg = $this->_errmsgs[-1];
+        } else {
+            if($info['size_download'] == 0) { // get MailError header
+                $this->_errno = SAE_ErrInternal;
+                $this->_errmsg = "word segmentation service internal error";
+            } else {
+                $array = json_decode(trim($ret), true);
+                if ( count( $array ) === 1 && is_int( $array[0] ) && $array[0] < 0 ) {
+                    $this->_errno = $array[0];
+                    $this->_errmsg = $this->_errmsgs[$array[0]];
+
+                    return false;
+                } else {
+                    $this->_errno = SAE_Success;
+                    $this->_errmsg = 'OK';
+
+                    return $array;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -521,4 +646,5 @@ class RedSaeSegment extends CApplicationComponent{
      * 空格
      */
     const POSTAG_ID_SPACE = 230;
+
 }

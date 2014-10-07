@@ -17,6 +17,9 @@ class SaeWebApplication extends RedWebApplication{
 			/*'assetManager'=>array(
 				'class'=>'SaeAssetManager',
 			),*/
+            'statePersister'=>array(
+                'class'=>'SaeStatePersister',
+            ),
 			'db'=>array(
 				'class'=>'SaeDbConnection',
 			),

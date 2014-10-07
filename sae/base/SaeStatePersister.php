@@ -10,6 +10,8 @@ class SaeStatePersister extends CApplicationComponent implements IStatePersister
 	public $cacheID = 'cache';
 	
 	public function init(){
+        parent::init();
+
 		$this->stateID = 'runtimes'.DIRECTORY_SEPARATOR.'state.bin';
 	}
 	
