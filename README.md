@@ -79,7 +79,7 @@ class IsGuest extends CFilter{
 
 ## 其他各种方法，请看代码吧
 
-## Sae支持
+## Sae支持 - 全透明的哦~
 <p>在Sae的支持上，主要做了Db、Cache、Log、Upload、Assets的策略修改。</p>
 <p>维护了一个没有实际作用的redlib/sae/lib库，一切只是为了代码提示。</p>
 
