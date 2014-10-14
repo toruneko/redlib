@@ -71,6 +71,7 @@ class Yii extends YiiBase{
 		'RedHttpRequest' => '/web/RedHttpRequest.php',
 		'RedWebApplication' => '/web/RedWebApplication.php',
 		'RedWebModule' => '/web/RedWebModule.php',
+        'RedUploadedFile' => '/web/RedUploadedFile.php',
 		
 		'SaeStatePersister' => '/sae/base/SaeStatePersister.php',
 		'SaeMemCache' => '/sae/caching/SaeMemCache.php',
