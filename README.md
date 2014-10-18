@@ -1,4 +1,4 @@
-redlib
+redlib(<a href="http://www.toruneko.net">http://www.toruneko.net</a>)
 ======
 
 部署时与yii同级目录。
