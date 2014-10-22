@@ -6,7 +6,7 @@
  * @desc: SaeUploadedFile class file.
  */
 class SaeUploadedFile extends RedUploadedFile{
-	private $_storage;
+	private $_storage = null;
 
     protected static function collectFilesRecursive($key, $names, $tmp_names, $types, $sizes, $errors){
         if(is_array($names))
@@ -22,18 +22,27 @@ class SaeUploadedFile extends RedUploadedFile{
     {
         parent::__construct($name,$tempName,$type,$size,$error);
 
-        $this->_storage = new SaeStorage();
+        if(!is_writable(Yii::getPathOfAlias('root'))){
+            $this->_storage = new SaeStorage();
+        }
     }
 
     public function saveAs($file, $domain){
         if($this->getError()==UPLOAD_ERR_OK){
-            if(($url = $this->_storage->upload($domain,$file,$this->getTempName())) !== false){
-                return $url;
+            if($this->_storage instanceof SaeStorage){
+                if(($url = $this->_storage->upload($domain,$file,$this->getTempName())) !== false){
+                    return $url;
+                }
             }else{
-                return false;
+                $dir = dirname($domain.$file);
+                if(!file_exists($dir)){
+                    CFileHelper::createDirectory($dir, 0777, true);
+                }
+                if(parent::saveAs($domain.$file, true)){
+                    return str_replace(Yii::getPathOfAlias('root'),'',$domain.$file);
+                }
             }
-        }else{
-            return false;
         }
+        return false;
     }
 }
