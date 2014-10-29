@@ -93,7 +93,7 @@ $red = dirname(__FILE__).'/redlib/red.php';
 require_once($red);
 // 可以根据Yii::craeteXApplication()加载对应的配置文件
 $config = dirname(__FILE__).'/protected/config/thrift.php';
-YII::createThriftWebApplication($config)->run();
+YII::createThriftApplication($config)->run();
 </pre>
 <p>继承TController，并实现接口</p>
 <pre>
