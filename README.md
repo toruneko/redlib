@@ -112,11 +112,18 @@ class HelloworldServiceController extends TController implements HelloworldServi
 > 这里需要注意的是，你不需要实现任何actionX，因为所有请求都交由actionIndex进行处理，他会帮你完成你想做的事情。
 
 ## thrift支持 - Client
-<p>你需要在配置里加上thriftClient</p>
+<p>你需要在配置里加上thriftClient以及serviceURL配置</p>
 <pre>
 'components'=>array(
     'thrift' => array(
         'class' => 'ThriftClient'
+    ),
+),
+...
+'params' => array(
+    'thrift' => array(
+        // 服务名 => 服务所在URL
+	'HelloworldService' => 'http://www.toruneko.net/index.php?r=helloworldService'
     ),
 ),
 </pre>
@@ -125,14 +132,14 @@ class HelloworldServiceController extends TController implements HelloworldServi
 use com\zhubajie\test\dataobject\helloworld\paramDO;
 use com\zhubajie\test\interfaces\HelloworldServiceClient;
 class TestClientController extends RedController{
-    public $serviceUrl = 'http://www.toruneko.com/index.php?r=helloworldService';
 
     public function actionTest(){
         $param = new paramDO();
         $param->param = 'get hello world';
         $client = new HelloworldServiceClient(null);
-        $this->app->thrift->build($client);
         try{
+            if($this->app->thrift->build($client) === false)
+                throw new CException("ServiceURL Not Found in App Config");
             $result = $client->test2($param);
             var_dump($result);
         }catch (Exception $e){
