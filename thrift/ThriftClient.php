@@ -21,11 +21,10 @@ class ThriftClient extends CApplicationComponent{
         $this->_controller = Yii::app()->getController();
     }
 
-    public function getOutput() {
+    public function getOutput($serviceUrl) {
         if($this->_output === null){
-            $parse = $this->parseUrl($this->_controller->serviceUrl);
+            $parse = $this->parseUrl($serviceUrl);
             $socket = new THttpClient($parse['host'], $parse['port'], $parse['path'], $parse['scheme']);
-            //$socket->addHeaders(isset($controller->header) ? $controller->header : array());
             $transport = new TBufferedTransport($socket, 1024, 1024);
             $this->_output = new TBinaryProtocol($transport);
         }
@@ -35,11 +34,20 @@ class ThriftClient extends CApplicationComponent{
         return $this->_output;
     }
 
-    public function build(&$client){
+    public function build(&$client, $serviceUrl = null){
+        if(!is_object($client)) return false;
         $class = get_class($client);
+        if(is_string($serviceUrl)){
+            $this->_client = new $class($this->getOutput($serviceUrl));
+        }else {
+            $params = Yii::app()->params;
+            $key = str_replace('Client', '', $class);
+            if (!isset($params['thrift'][$key])) return false;
+            $this->_client = new $class($this->getOutput($params['thrift'][$key]));
+        }
 
-        $this->_client = new $class($this->getOutput());
         $client = $this;
+        return true;
     }
 
     public function __call($method, $arguments){
