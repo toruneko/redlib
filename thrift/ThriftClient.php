@@ -52,7 +52,7 @@ class ThriftClient extends CApplicationComponent{
 
     public function __call($method, $arguments){
         $result = call_user_func_array(array($this->_client, $method), $arguments);
-        $this->getOutput()->getTransport()->close();
+        $this->getOutput(null)->getTransport()->close();
         return $result;
     }
 
