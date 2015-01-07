@@ -116,7 +116,7 @@ class Yii extends YiiBase{
         'Thrift\Server\TServerSocket' => '/thrift/server/TServerSocket.php',
         'Thrift\Server\TServerTransport' => '/thrift/server/TServerTransport.php',
         'Thrift\Server\TSimpleServer' => '/thrift/server/TSimpleServer.php',
-        'Thrift\StringFunc\Core' => '/thrift/stringfunc/core.php',
+        'Thrift\StringFunc\Core' => '/thrift/stringfunc/Core.php',
         'Thrift\StringFunc\Mbstring' => '/thrift/stringfunc/Mbstring.php',
         'Thrift\StringFunc\TStringFunc' => '/thrift/stringfunc/TStringFunc.php',
         'Thrift\Transport\TBufferedTransport' => '/thrift/transport/TBufferedTransport.php',

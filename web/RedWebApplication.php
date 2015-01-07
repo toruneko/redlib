@@ -32,6 +32,9 @@ class RedWebApplication extends CWebApplication{
 			'clientScript'=>array(
 				'class'=>'RedClientScript',
 			),
+            'securityManager'=>array(
+                'class'=>'RedSecurityManager',
+            ),
 		);
 	
 		$this->setComponents($components);

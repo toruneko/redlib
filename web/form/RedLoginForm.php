@@ -45,7 +45,7 @@ class RedLoginForm extends CFormModel{
 	 * This is the 'authenticate' validator as declared in rules().
 	 */
 	public function authenticate($attribute,$params){
-		
+		return false;
 	}
 	
 	/**
