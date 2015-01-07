@@ -41,7 +41,8 @@ class ThriftClient extends CApplicationComponent{
             $this->_client = new $class($this->getOutput($serviceUrl));
         }else {
             $params = Yii::app()->params;
-            $key = str_replace('Client', '', $class);
+            $key = explode("\\", $class);
+            $key = strtolower(str_replace("Client", '', $key[count($key) - 1]));
             if (!isset($params['thrift'][$key])) return false;
             $this->_client = new $class($this->getOutput($params['thrift'][$key]));
         }
