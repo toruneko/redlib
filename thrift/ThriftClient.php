@@ -35,7 +35,9 @@ class ThriftClient extends CApplicationComponent{
     }
 
     public function build(&$client, $serviceUrl = null){
-        if(!is_object($client)) return false;
+        if(!is_object($client)) {
+            throw new CException("Invalid Parameter of Client");
+        }
         $class = get_class($client);
         if(is_string($serviceUrl)){
             $this->_client = new $class($this->getOutput($serviceUrl));
@@ -43,12 +45,13 @@ class ThriftClient extends CApplicationComponent{
             $params = Yii::app()->params;
             $key = explode("\\", $class);
             $key = strtolower(str_replace("Client", '', $key[count($key) - 1]));
-            if (!isset($params['thrift'][$key])) return false;
+            if (!isset($params['thrift'][$key])){
+                throw new CException("ServiceURL Not Found in App Config");
+            }
             $this->_client = new $class($this->getOutput($params['thrift'][$key]));
         }
 
         $client = $this;
-        return true;
     }
 
     public function __call($method, $arguments){
