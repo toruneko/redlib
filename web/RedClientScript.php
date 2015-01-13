@@ -8,6 +8,7 @@
 class RedClientScript extends CClientScript{
 	public $coreScriptPosition = self::POS_END;
 	public $defaultScriptFilePosition = self::POS_END;
+	public $defaultScriptPosition = self::POS_END;
 	
 	/* 
 	 * @see CApplicationComponent::init()
