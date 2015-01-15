@@ -83,6 +83,9 @@ class Yii extends YiiBase{
 		'SaeHttpSession' => '/sae/web/SaeHttpSession.php',
 		'SaeUploadedFile' => '/sae/web/SaeUploadedFile.php',
 		'SaeWebApplication' => '/sae/web/SaeWebApplication.php',
+        'SaeQueue' => '/sae/queue/SaeQueue',
+        'SaeEmail' => '/sae/utils/SaeEmail',
+        'SaeTimer' => '/sae/utils/SaeTimer',
         'SaeSearch' => '/sae/search/SaeSearch.php',
         'SaeSearchMeta' => '/sae/search/SaeSearchMeta.php',
 
