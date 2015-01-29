@@ -138,8 +138,7 @@ class TestClientController extends RedController{
         $param->param = 'get hello world';
         $client = new HelloworldServiceClient(null);
         try{
-            if($this->app->thrift->build($client) === false)
-                throw new CException("ServiceURL Not Found in App Config");
+            $this->app->thrift->build($client);
             $result = $client->test2($param);
             var_dump($result);
         }catch (Exception $e){
