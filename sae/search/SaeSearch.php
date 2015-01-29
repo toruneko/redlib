@@ -159,6 +159,7 @@ class SaeSearch extends CApplicationComponent{
                 if(isset($meta[$index])){
                     $obj = &$meta[$index];
                     $obj->setTimes($obj->getTimes() + 1);
+                    unset($obj);
                 }else{
                     $obj = new SaeSearchMeta();
                     $obj->setId($id);
