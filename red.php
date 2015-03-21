@@ -72,6 +72,7 @@ class Yii extends YiiBase{
 		'RedWebApplication' => '/web/RedWebApplication.php',
 		'RedWebModule' => '/web/RedWebModule.php',
         'RedUploadedFile' => '/web/RedUploadedFile.php',
+        'RedDnaSegment' => '/search/RedDnaSegment.php',
 		
 		'SaeStatePersister' => '/sae/base/SaeStatePersister.php',
 		'SaeMemCache' => '/sae/caching/SaeMemCache.php',
