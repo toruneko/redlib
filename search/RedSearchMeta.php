@@ -1,11 +1,11 @@
 <?php
 /**
- * File: SaeSearchMeta.php
+ * File: RedSearchMeta.php
  * User: daijianhao(toruneko@outlook.com)
  * Date: 14/10/31 09:36
  * Description: 搜索元信息
  */
-class SaeSearchMeta extends CApplicationComponent{
+class RedSearchMeta extends CApplicationComponent{
     private $id;
     private $keyword;
     private $class;

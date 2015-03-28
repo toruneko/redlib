@@ -45,7 +45,7 @@ class RedDnaSegment extends CApplicationComponent{
         }
     }
 
-    public function segment($dna){
+    public function segment($dna, $mode){
         $wordSize = $this->getWordSize();
         $read = $this->getRead();
         //$lexicon = $this->getLexicon();
@@ -53,7 +53,11 @@ class RedDnaSegment extends CApplicationComponent{
         $segment = array();
 
         for($i = 0; $i < $len; $i += $read){
-            $segment[] = substr($dna, $i, $wordSize);
+            $segment[] = array(
+				'index' => $i,
+				'word' => substr($dna, $i, $wordSize),
+				'word_tag' => 999
+			);
         }
 
         return $segment;

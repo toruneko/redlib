@@ -72,7 +72,9 @@ class Yii extends YiiBase{
 		'RedWebApplication' => '/web/RedWebApplication.php',
 		'RedWebModule' => '/web/RedWebModule.php',
         'RedUploadedFile' => '/web/RedUploadedFile.php',
-        'RedDnaSegment' => '/search/RedDnaSegment.php',
+        'RedSearch' => '/search/RedSearch.php',
+        'RedSearchMeta' => '/search/RedSearchMeta.php',
+        'RedDnaSegment' => '/search/segment/RedDnaSegment.php',
 		
 		'SaeStatePersister' => '/sae/base/SaeStatePersister.php',
 		'SaeMemCache' => '/sae/caching/SaeMemCache.php',
@@ -88,7 +90,6 @@ class Yii extends YiiBase{
         'SaeEmail' => '/sae/utils/SaeEmail.php',
         'SaeTimer' => '/sae/utils/SaeTimer.php',
         'SaeSearch' => '/sae/search/SaeSearch.php',
-        'SaeSearchMeta' => '/sae/search/SaeSearchMeta.php',
 
         'TApplication' => '/thrift/TApplication.php',
         'TController' => '/thrift/TController.php',
