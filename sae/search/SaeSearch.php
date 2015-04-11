@@ -5,7 +5,7 @@
  * Date: 14/10/31 09:33
  * Description: 
  */
-class SaeSearch extends RedSearch{
+class SaeSearchEngine extends RedSearchEngine{
     public $disabled_tags = array(
         SaeSegment::POSTAG_ID_UNKNOW,   //未知词
         //连词 30-32
