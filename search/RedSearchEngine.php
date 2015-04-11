@@ -174,16 +174,16 @@ class RedSearchEngine extends CApplicationComponent{
      */
     public function createSearchQuery($text, $id = 0, $discached = false){
         if(!is_array($text)){
-            $keyword = array($text);
+            $text = array($text);
         }
 
         $cacheKey = md5(CJSON::encode($text));
         if($discached || ($query = $this->cache->get($cacheKey)) == false){
             $words = array();
             do{
-                $kw = array_pop($keyword);
+                $kw = array_pop($text);
                 $words = array_merge($words, (array)$this->segment->segment($kw, 1));
-            }while(!empty($keyword));
+            }while(!empty($text));
 
             $segment = array();
             foreach($words as $word){
