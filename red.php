@@ -89,10 +89,10 @@ class Yii extends YiiBase{
 		'SaeHttpSession' => '/sae/web/SaeHttpSession.php',
 		'SaeUploadedFile' => '/sae/web/SaeUploadedFile.php',
 		'SaeWebApplication' => '/sae/web/SaeWebApplication.php',
+        'SaeSearchEngine' => '/sae/search/SaeSearchEngine.php',
         'SaeQueue' => '/sae/queue/SaeQueue.php',
         'SaeEmail' => '/sae/utils/SaeEmail.php',
         'SaeTimer' => '/sae/utils/SaeTimer.php',
-        'SaeSearch' => '/sae/search/SaeSearch.php',
 
         'TApplication' => '/thrift/TApplication.php',
         'TController' => '/thrift/TController.php',
