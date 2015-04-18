@@ -6,17 +6,15 @@
  * Description: DNA 分词服务
  */
 class RedDNASegment extends CApplicationComponent implements IRedSegment{
-    public $wordSize = 12;
-    public $read = 1;
 
     public function segment($text, $mode){
-        $len = strlen($text) - $this->wordSize + 1;
+        $len = strlen($text) - 12 + 1;
         $segment = array();
 
-        for($i = 0; $i < $len; $i += $this->read){
+        for($i = 0; $i < $len; $i++){
             $segment[] = array(
 				'index' => $i,
-				'word' => substr($text, $i, $this->wordSize),
+				'word' => substr($text, $i, 12),
 				'word_tag' => 999
 			);
         }

@@ -13,8 +13,6 @@ class RedSearchEngine extends CApplicationComponent{
 	public $segment;
     public $table = 'search';
     public $indexCachingDuration = 86400;
-    public $sumRate = 0.6;
-    public $countRate = 0.4;
     public $disabled_tags = array();
 
     public function init(){
@@ -38,17 +36,23 @@ class RedSearchEngine extends CApplicationComponent{
     public function search(RedSearchQuery $query){
         $segment = $query->getSegment();
 
+        /**
+         * 从缓存中检索
+         */
         $words = array();
         $cachedIndex = array();
         foreach($segment as $item){
             $keyword = $item->getKeyword();
             if(($result = $this->redis->get($keyword)) == false){
                 $words[] = "'".$keyword."'";
-            }else {
+            }else{
                 $cachedIndex[$keyword] = $result;
             }
         }
 
+        /**
+         * 从数据库中检索
+         */
         if(!empty($words)){
             $result = $this->db->createCommand()
                 ->select()->from($this->table)
@@ -65,19 +69,38 @@ class RedSearchEngine extends CApplicationComponent{
         }
         if(empty($cachedIndex)) return array();
 
-        $result = array();
-        foreach($cachedIndex as $keyword => $indexes){
-            foreach($indexes as $index){
-                $result[$index['id']][] = $index['times'];
+        /**
+         * 获取本次检索中的最大文件频率数作为总文件数
+         */
+        $totalPage = 0;
+        foreach($cachedIndex as $indexes){
+            $count = count($indexes);
+            if($totalPage < $count){
+                $totalPage = $count;
             }
         }
+
+        /**
+         * 计算TF-IDF
+         */
+        $tf_idf = array();
+        foreach($cachedIndex as $keyword => $indexes){
+            $idf = log10($totalPage / count($indexes));
+            foreach($indexes as $docId => $index){
+                $tf = $index['times'] / $index['textLen'];
+                $tf_idf[$docId][] = $tf * $idf;
+            }
+        }
+
+        /**
+         * 求和并排序
+         */
         $ids = array();
-        foreach($result as $key => $value){
-            $count = count($value);
-            $sum = is_array($value) ? array_sum($value) : $value;
-            $ids[$key] = $sum * $this->sumRate + $count * $this->countRate;
+        foreach($tf_idf as $docId => $item){
+            $ids[$docId] = array_sum($item);
         }
         arsort($ids);
+
         return array_keys($ids);
     }
 
@@ -89,7 +112,8 @@ class RedSearchEngine extends CApplicationComponent{
     public function commit(RedSearchQuery $query){
         $transaction = $this->db->beginTransaction();
         $segment = $query->getSegment();
-        $docid = $query->getId();
+        $docId = $query->getId();
+        $textLen = $query->getTextLength();
         try{
             foreach($segment as $item){
                 $keyword = $item->getKeyword();
@@ -101,7 +125,7 @@ class RedSearchEngine extends CApplicationComponent{
                     ->where('keyword=:kw', array('kw' => $keyword))
                     ->queryRow();
 
-                if($newKeyword = empty($result)){
+                if($isNewKeyword = empty($result)){
                     $result = array(
                         'keyword' => $keyword,
                         'index' => '[]'
@@ -109,15 +133,15 @@ class RedSearchEngine extends CApplicationComponent{
                 }
 
                 $index = CJSON::decode($result['index']);
-                if(array_key_exists($docid, $index)) continue;
-                $index[$docid] = array(
-                    'id' => $docid,
+                if(array_key_exists($docId, $index)) continue;
+                $index[$docId] = array(
+                    'textLen' => $textLen,
                     'times' => $times,
                     'indexes' => $indexes
                 );
                 $result['index'] = CJSON::encode($index);
 
-                if($newKeyword){
+                if($isNewKeyword){
                     $res = $this->db->createCommand()
                         ->insert($this->table, $result);
                 }else{
@@ -173,17 +197,14 @@ class RedSearchEngine extends CApplicationComponent{
      * @return array
      */
     public function createSearchQuery($text, $id = 0, $discached = false){
-        if(!is_array($text)){
-            $text = array($text);
-        }
+        if(!is_array($text)) $text = array($text);
 
         $cacheKey = md5(CJSON::encode($text));
         if($discached || ($query = $this->cache->get($cacheKey)) == false){
             $words = array();
-            do{
-                $kw = array_pop($text);
+            foreach($text as $kw){
                 $words = array_merge($words, (array)$this->segment->segment($kw, 1));
-            }while(!empty($text));
+            }
 
             $segment = array();
             foreach($words as $word){
@@ -193,6 +214,7 @@ class RedSearchEngine extends CApplicationComponent{
 
                 if(isset($segment[$keyword])){
                     $segment[$keyword]->addTimes();
+                    $segment[$keyword]->addIndex($word['index']);
                 }else{
                     $segment[$keyword] = new RedSearchSegment($keyword, $word['word_tag'], $word['index']);
                 }

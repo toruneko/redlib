@@ -35,8 +35,8 @@ class RedSearchQuery extends CApplicationComponent{
         return $this->segment;
     }
 
-    public function addSegment(RedSearchSegment $segment){
-        $this->segment[] = $segment;
+    public function addSegment($keyword, RedSearchSegment $segment){
+        $this->segment[$keyword] = $segment;
     }
 
     /**
@@ -51,6 +51,14 @@ class RedSearchQuery extends CApplicationComponent{
      */
     public function getText(){
         return $this->text;
+    }
+
+    public function getTextLength(){
+        $len = 0;
+        foreach($this->text as $text){
+            $len += (strlen($text) + 12 - 1);
+        }
+        return $len;
     }
 
     /**
