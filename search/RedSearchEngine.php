@@ -86,9 +86,11 @@ class RedSearchEngine extends CApplicationComponent{
          * 计算TF-IDF
          */
         $ids = array();
+        $offset = array();
         foreach($cachedIndex as $keyword => $indexes){
             $idf = log10($totalPage / count($indexes));
             foreach($indexes as $docId => $index){
+                $offset[$docId] = $index['indexes'];
                 $tf = $index['times'] / $index['textLen'];
                 if(isset($tf_idf[$docId])){
                     $ids[$docId] += $tf * $idf;
@@ -100,7 +102,10 @@ class RedSearchEngine extends CApplicationComponent{
 
         arsort($ids);
 
-        return array_keys($ids);
+        return array(
+            'ids' => array_keys($ids),
+            'offset' => $offset
+        );
     }
 
     /**
