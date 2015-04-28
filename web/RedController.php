@@ -127,6 +127,10 @@ class RedController extends CController{
 	 */
 	public function response($status = 200,$info = 'success',$data = null){
 		header('Content-Type:application/json; charset=UTF-8');
-		echo CJSON::encode(array('status' => $status,'info' => $info,'data' => $data));
+        if(empty($data)){
+            echo CJSON::encode(array('status' => $status,'info' => $info));
+        }else{
+            echo CJSON::encode(array('status' => $status,'info' => $info,'data' => $data));
+        }
 	}
 }
