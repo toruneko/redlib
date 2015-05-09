@@ -10,10 +10,6 @@ class RedSearchEngine extends CApplicationComponent{
     private $cache;
     private $redis;
 
-    public $dbId = 'db';
-    public $cacheId = 'cache';
-    public $redisId = 'redis';
-
 	public $segment;
     public $table = 'search';
     public $indexCachingDuration = 86400;
@@ -23,9 +19,9 @@ class RedSearchEngine extends CApplicationComponent{
         parent::init();
 
 		$app = Yii::app();
-        $this->db = $app->getComponent($this->dbId);
-        $this->cache = $app->getComponent($this->cacheId);
-        $this->redis = $app->getComponent($this->redisId);
+        $this->db = $app->getComponent('db');
+        $this->cache = $app->getComponent('cache');
+        $this->redis = $app->getComponent('redis');
 		
 		if(is_array($this->segment)){
 			$this->segment = Yii::createComponent($this->segment);
@@ -86,11 +82,9 @@ class RedSearchEngine extends CApplicationComponent{
          * 计算TF-IDF
          */
         $ids = array();
-        $offset = array();
         foreach($cachedIndex as $keyword => $indexes){
             $idf = log10($totalPage / count($indexes));
             foreach($indexes as $docId => $index){
-                $offset[$docId] = $index['indexes'];
                 $tf = $index['times'] / $index['textLen'];
                 if(isset($tf_idf[$docId])){
                     $ids[$docId] += $tf * $idf;
@@ -102,10 +96,7 @@ class RedSearchEngine extends CApplicationComponent{
 
         arsort($ids);
 
-        return array(
-            'ids' => array_keys($ids),
-            'offset' => $offset
-        );
+        return array_keys($ids);
     }
 
     /**
@@ -175,35 +166,16 @@ class RedSearchEngine extends CApplicationComponent{
      */
     public function delete(RedSearchQuery $query){
         $segment = $query->getSegment();
-        $docId = $query->getId();
 
         $transaction = $this->db->beginTransaction();
         try{
             foreach($segment as $item){
-                $keyword = $item->getKeyword();
-
                 $result = $this->db->createCommand()
-                    ->select()->from($this->table)
-                    ->where('keyword=:kw', array('kw' => $keyword))
-                    ->queryRow();
-                $index = CJSON::decode($result['index']);
-                if(isset($index[$docId]))unset($index[$docId]);
-
-                if(empty($index)){
-                    $res = $this->db->createCommand()
-                        ->delete($this->table, 'keyword=:kw', array('kw' => $keyword));
-                    if($res)
-                        $this->redis->delete($item->getKeyword());
-                }else{
-                    $res = $this->db->createCommand()
-                        ->update($this->table, array(
-                            'index' => CJSON::encode($index),
-                        ), 'keyword=:kw', array('kw' => $keyword));
-                    if($res)
-                        $this->redis->set($keyword, $index);
-                }
-
-                if(!$res) throw new Exception('删除索引失败');
+                    ->delete('keyword=:kw', array(
+                        'kw' => $item->getKeyword()
+                    ));
+                if(!$result) throw new Exception('删除索引失败');
+                $this->redis->delete($item->getKeyword());
             }
 
             $transaction->commit();
@@ -246,9 +218,7 @@ class RedSearchEngine extends CApplicationComponent{
             }
 
             $query = new RedSearchQuery($text, $id, $segment);
-            if(!$discached){
-                $this->cache->set($cacheKey, $query, $this->indexCachingDuration);
-            }
+            $this->cache->set($cacheKey, $query, $this->indexCachingDuration);
         }
 
         return $query;

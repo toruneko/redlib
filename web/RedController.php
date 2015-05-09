@@ -51,7 +51,7 @@ class RedController extends CController{
 		);
 	}
 	
-	public function accessDenied(){
+	public function accessDenied($rule){
 		
 	}
 
@@ -108,7 +108,7 @@ class RedController extends CController{
 	 * @return boolean
 	 */
 	public function allowAjaxRequest(){
-		return false;
+		return true;
 	}
 
     /**
@@ -118,13 +118,13 @@ class RedController extends CController{
     public function allowHttpRequest(){
         return true;
     }
-	
-	/**
-	 * json返回
-	 * @param number $status
-	 * @param string $info
-	 * @param string $data
-	 */
+
+    /**
+     * json返回
+     * @param int $status
+     * @param string $info
+     * @param null $data
+     */
 	public function response($status = 200,$info = 'success',$data = null){
 		header('Content-Type:application/json; charset=UTF-8');
         if(empty($data)){

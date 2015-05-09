@@ -5,7 +5,7 @@
  * Date: 15/3/30 21:25
  * Description: 搜索请求
  */
-class RedSearchQuery{
+class RedSearchQuery extends CApplicationComponent{
 
     /**
      * @var 原始文本

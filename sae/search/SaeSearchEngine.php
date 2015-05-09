@@ -6,7 +6,7 @@
  * Description: 
  */
 class SaeSearchEngine extends RedSearchEngine{
-    public $disabled_tags = array(
+    /*public $disabled_tags = array(
         SaeSegment::POSTAG_ID_UNKNOW,   //未知词
         //连词 30-32
         SaeSegment::POSTAG_ID_C,        //连词
@@ -64,7 +64,7 @@ class SaeSearchEngine extends RedSearchEngine{
         SaeSegment::POSTAG_ID_RQ,       //代量短语
         //空格 230
         SaeSegment::POSTAG_ID_SPACE,    //空格
-    );
+    );*/
 
     public function init(){
         parent::init();

@@ -14,7 +14,7 @@ class RedWebUser extends CWebUser{
 				return $access;
 			}
 		}
-	
+
 		$access=Yii::app()->getAuthManager()->checkAccess($operation,$this->getId(),$params);
 		if($allowCaching){
 			$this->cacheAccess($this->generateKey($operation), $access);

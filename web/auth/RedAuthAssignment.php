@@ -20,7 +20,7 @@ class RedAuthAssignment extends CComponent{
 	
 	public function checkAccess($itemName){
 		foreach($this->_operations as $operation){
-			if($operation->getStatus() != 0 || $operation->checkAccess($itemName)){
+			if($operation != false && $operation->checkAccess($itemName)){
                 return true;
             }
 		}

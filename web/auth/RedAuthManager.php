@@ -7,32 +7,36 @@
  */
 abstract class RedAuthManager extends CApplicationComponent implements IAuthManager{
 
-	/**
-	 * 添加角色
-	 * @param string $name
-	 * @param string $description
-	 * @param array $options
-	 */
+    /**
+     * 添加角色
+     * @param $name
+     * @param string $description
+     * @param int $fid
+     * @return mixed
+     */
 	public function createRole($name,$description = '',$fid = 0){
 		return $this->createAuthItem($name,RedAuthItem::TYPE_ROLE,$description,$fid,array());
 	}
 
-	/**
-	 * 添加用户组
-	 * @param string $name
-	 * @param string $description
-	 * @param array $options
-	 */
+    /**
+     * 添加用户组
+     * @param $name
+     * @param string $description
+     * @param int $fid
+     * @return mixed
+     */
 	public function createGroup($name,$description = '',$fid = 0){
 		return $this->createAuthItem($name,RedAuthItem::TYPE_GROUP,$description,$fid,array());
 	}
 
-	/**
-	 * 添加操作
-	 * @param string $name
-	 * @param string $description
-	 * @param array $options
-	 */
+    /**
+     * 添加操作
+     * @param $name
+     * @param string $description
+     * @param int $fid
+     * @param array $mca
+     * @return mixed
+     */
 	public function createOperation($name,$description = '',$fid = 0,$mca = array()){
 		return $this->createAuthItem($name,RedAuthItem::TYPE_OPERATION,$description,$fid,$mca);
 	}
@@ -42,7 +46,7 @@ abstract class RedAuthManager extends CApplicationComponent implements IAuthMana
 	 * @param boolean $id
 	 */
 	public function removeRoleByPk($id){
-		return $this->removeAuthItem(new RedAuthRole($this, $id));
+		return $this->removeAuthItem($this->getRoleByPk($id));
 	}
 	
 	/**
@@ -50,7 +54,7 @@ abstract class RedAuthManager extends CApplicationComponent implements IAuthMana
 	 * @param boolean $id
 	 */
 	public function removeGroupByPk($id){
-		return $this->removeAuthItem(new RedAuthGroup($this, $id));
+		return $this->removeAuthItem($this->getGroupByPk($id));
 	}
 	
 	/**
@@ -58,12 +62,12 @@ abstract class RedAuthManager extends CApplicationComponent implements IAuthMana
 	 * @param boolean $id
 	 */
 	public function removeOperationByPk($id){
-		return $this->removeAuthItem(new RedAuthOperation($this, $id));
+		return $this->removeAuthItem($this->getOperationByPk($id));
 	}
 
 	/**
 	 * 返回角色
-	 * @param string $userId
+	 * @param string $roleId
 	 */
 	public function getRoleByPk($roleId){
 		return $this->getAuthItems(RedAuthItem::TYPE_ROLE,$roleId);
@@ -71,7 +75,7 @@ abstract class RedAuthManager extends CApplicationComponent implements IAuthMana
 
 	/**
 	 * 返回用户组
-	 * @param string $userId
+	 * @param string $groupId
 	 */
 	public function getGroupByPk($groupId){
 		return $this->getAuthItems(RedAuthItem::TYPE_GROUP,$groupId);
@@ -79,7 +83,7 @@ abstract class RedAuthManager extends CApplicationComponent implements IAuthMana
 
 	/**
 	 * 返回操作
-	 * @param string $userId
+	 * @param string $operationId
 	 */
 	public function getOperationByPk($operationId){
 		return $this->getAuthItems(RedAuthItem::TYPE_OPERATION,$operationId);
@@ -98,14 +102,8 @@ abstract class RedAuthManager extends CApplicationComponent implements IAuthMana
 	 * @param integer $userId
 	 */
 	public function getGroupByUserId($userId){
-		return $this->getAuthItemGroup(RedAuthGroup::ADMIN_GROUP, $userId);
+		return $this->getAuthItemGroup($userId);
 	}
-	
-	/**
-	 * 返回角色所在组
-	 * @param integer $roleId
-	 */
-	public function getGroupByRoleId($roleId){
-		return $this->getAuthItemGroup(RedAuthGroup::ROLE_GROUP, $roleId);
-	}
+
+    abstract public function getAuthItemGroup($userId);
 }

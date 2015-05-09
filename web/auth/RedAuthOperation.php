@@ -30,7 +30,7 @@ class RedAuthOperation extends RedAuthItem{
 		return $this->getAuthManager()->createAuthItem($name, $this->getType(),
 					$description,$this->getId(),array(
 						'module' => $module,
-						'controller' => $controller, 
+						'controller' => $controller,
 						'action' => $action
 					));
 	}*/

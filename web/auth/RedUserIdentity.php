@@ -6,5 +6,9 @@
  * desc:RedUserIdentity
  */
 class RedUserIdentity extends CUserIdentity{
-	
+
+    public function getId()
+    {
+        return $this->getState('id');
+    }
 }

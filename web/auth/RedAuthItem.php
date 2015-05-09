@@ -50,7 +50,7 @@ abstract class RedAuthItem extends CComponent{
 		if(!$this->getIsMultiLevel()) return null;
 
 	    $cache = Yii::app()->cache;
-        $cacheName = 'RedAuthItem.checkAccess.'.json_encode($itemName);
+        $cacheName = 'RedAuthItem.checkAccess.'.CJSON::encode($itemName);
         if(($record = $cache->get($cacheName)) === false){
             if(!is_array($itemName)){
                 $condition = 'id=:id';
@@ -72,7 +72,7 @@ abstract class RedAuthItem extends CComponent{
         }
         if($record === false) return null;
 
-		return ($record['lft'] <= $this->getLft() && $this->getRgt() >= $record['rgt']);
+		return ($record['lft'] <= $this->getLft() && $this->getRgt() <= $record['rgt']);
 	}
 
 	/**
@@ -80,7 +80,7 @@ abstract class RedAuthItem extends CComponent{
 	 * @return RedAuthItem 
 	 */
 	public function addChild($name){
-		$this->_auth->addItemChild($this, $name);
+		return $this->_auth->addItemChild($this, $name);
 	}
 	
 	/**

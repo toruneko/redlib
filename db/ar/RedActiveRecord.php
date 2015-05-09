@@ -6,14 +6,12 @@
  * desc: RedActiveRecord
  */
 class RedActiveRecord extends CActiveRecord{
-
-    /**
-     * 求和
-     * @param $field
-     * @param string $conditions
-     * @param array $params
-     * @return mixed
-     */
+	/**
+	 * 求和
+	 * @param string $field
+	 * @param string $conditions
+	 * @param array $params
+	 */
 	public function sum($field,$conditions = '',$params = array()){
 		$data = $this->find(array(
 			'select' => 'SUM(`'.$field.'`) AS `sum`',

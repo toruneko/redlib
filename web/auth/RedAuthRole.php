@@ -102,7 +102,7 @@ class RedAuthRole extends RedAuthItem{
 	 * @see RedAuthItem::getIsMultiLevel()
 	 */
 	public function getIsMultiLevel() {
-        return false;
+        return !($this->getLevel() == 0);
 	}
 	
 	/**

@@ -52,7 +52,7 @@ class RedDbAuthManager extends RedAuthManager{
 			->select()->from($type)
 			->where('id=:id',array('id' => $bizRule))
 			->queryRow();
-			
+
 		$transaction = $this->db->beginTransaction();
 		try{
 			$levelInfo = $this->updateTreeOnCreate($type,$parent);
@@ -61,11 +61,11 @@ class RedDbAuthManager extends RedAuthManager{
 				'description' => $description,
 				'status' => 0
 			)));
-		
+            $lastId = $this->db->getLastInsertID();
+
 			if($effectRow){
 				$transaction->commit();
-				$lastId = $this->db->getLastInsertID();
-				
+
 				$class = new ReflectionClass($this->_classMap[$type]);
 				return call_user_func_array(array($class,'newInstance'),array(
 					$this,$lastId,$name,$description,0,array_merge($data,$levelInfo)
@@ -84,6 +84,8 @@ class RedDbAuthManager extends RedAuthManager{
 	 * @see IAuthManager::removeAuthItem()
 	 */
 	public function removeAuthItem($name) {
+        if($name == false) return false;
+
 		if (!$name->getIsMultiLevel()) {
 			return $this->db->createCommand->delete($name->getType(),
 					'id=:id',array('id' => $name->getId()));
@@ -124,24 +126,25 @@ class RedDbAuthManager extends RedAuthManager{
 				->where('id=:id',array('id' => $item->getId()))
 				->queryRow();
 			if ($old === false) return false;
-				
+
 			if($old['fid'] != $item->getFid()){
-				$transaction = $this->db->getTransaction();
+				$transaction = $this->db->beginTransaction();
 				try {
 					$effectRow = $this->db->createCommand()
 						->update($item->getType(), $item->getOptions(), 'id=:id', array(
 							'id' => $item->getId()
 						));
-						
-					$this->updateTreeOnMigrate($item->getType(),$old,$item->getFid());
-	
-					if ( $effectRow ){
-						$transaction->commit();
-						return true;
-					}
+
+					if($this->updateTreeOnMigrate($item->getType(),$old,$item->getFid())){
+                        if ( $effectRow ){
+                            $transaction->commit();
+                            return true;
+                        }
+                    }
 	
 					throw new CException();
 				}catch ( CException $e ){
+                    var_dump($e);
 					$transaction->rollback();
 					return false;
 				}
@@ -160,8 +163,8 @@ class RedDbAuthManager extends RedAuthManager{
 	*/
 	public function addItemChild($itemName, $childName) {
 		if(!$itemName->getIsMultilevel()) return false;
-		
-		return $this->createAuthItem($childName, $itemName->getType(), null, $itemName->getFid(),array());
+
+		return $this->createAuthItem($childName, $itemName->getType(), null, $itemName->getId(),array());
 	}
 	
 	/*
@@ -247,7 +250,8 @@ class RedDbAuthManager extends RedAuthManager{
 			->select()->from($type)
 			->where('id=:id',array('id' => $userId))
 			->queryRow();
-		
+		if($data == false) return false;
+
 		$class = new ReflectionClass($this->_classMap[$type]);
 		return call_user_func_array(array($class,'newInstance'), array(
 			$this,$data['id'],$data['name'],$data['description'],$data['status'],$data
@@ -269,29 +273,22 @@ class RedDbAuthManager extends RedAuthManager{
 		}
 		return $roles;
 	}
-	
-	/**
-	 * 返回用户或角色所在用户组
-	 * @return boolean|multitype:object
-	 */
-	public function getAuthItemGroup($itemName,$userId){
-		if($itemName == RedAuthGroup::ADMIN_GROUP){
-			$condition = 'user_id=:id';
-		}elseif($itemName == RedAuthGroup::ROLE_GROUP){
-			$condition = 'role_id=:id';
-		}else{
-			return false;
-		}
-		$records = $this->db->createCommand()
-			->select()->from($itemName)
-			->where($condition,array('id' => $userId))
-			->queryAll();
-		$groups = array();
-		foreach($records as $record){
-			$groups[] = $this->getAuthItems(RedAuthItem::TYPE_GROUP,$record['group_id']);
-		}
-		return $groups;
-	}
+
+    /**
+     * 返回用户或角色所在用户组
+     * @return boolean|multitype:object
+     */
+    public function getAuthItemGroup($userId){
+        $records = $this->db->createCommand()
+            ->select()->from(RedAuthGroup::ADMIN_GROUP)
+            ->where('user_id=:uid',array('uid' => $userId))
+            ->queryAll();
+        $groups = array();
+        foreach($records as $record){
+            $groups[] = $this->getAuthItems(RedAuthItem::TYPE_GROUP,$record['group_id']);
+        }
+        return $groups;
+    }
 	
 	/**
 	 * 返回关联
@@ -413,7 +410,7 @@ class RedDbAuthManager extends RedAuthManager{
 			->where('id=:id',array('id' => $targetNode))
 			->queryRow();
 		if($targetNode === false) return false;
-		
+
 		$this->db->createCommand()
 			->update($table,array(
 				'lft' => new CDbExpression('-lft'),
@@ -424,30 +421,46 @@ class RedDbAuthManager extends RedAuthManager{
 			));
 		
 		$decrease = $subtreeRoot['rgt'] - $subtreeRoot['lft'] + 1;
+        if($subtreeRoot['rgt'] > $targetNode['rgt']){
+            $decrease = '+'.$decrease;
+            $min = $targetNode['lft'];
+            $max = $subtreeRoot['lft'];
+        }else{
+            $decrease = '-'.$decrease;
+            $min = $subtreeRoot['rgt'];
+            $max = $targetNode['rgt'];
+        }
+        $this->db->createCommand()
+            ->update($table, array(
+                'lft' => new CDbExpression('lft'.$decrease)
+            ),'lft>:right AND lft<:fright', array(
+                'right' => $min,
+                'fright' => $max
+            ));
+        $this->db->createCommand()
+            ->update($table, array(
+                'rgt' => new CDbExpression('rgt'.$decrease)
+            ),'rgt>:right AND rgt<:fright', array(
+                'right' => $min,
+                'fright' => $max
+            ));
+
+
+        if($subtreeRoot['rgt'] > $targetNode['rgt']){
+            $increase = '-'.($subtreeRoot['lft'] - $targetNode['lft'] - 1);
+        }else{
+            $increase = '+'.($targetNode['rgt'] - $subtreeRoot['rgt'] - 1);
+        }
+        $level = $targetNode['level'] - $subtreeRoot['level'] + 1;
+        if($level >= 0) $level = '+'.$level;
 		$this->db->createCommand()
 			->update($table,array(
-				'lft' => new CDbExpression('lft-'.$decrease)
-			),'lft>:right AND lft<:fright',array(
-				'right' => $subtreeRoot['rgt'],
-				'fright' => $targetNode['rgt']
-			));
-		$this->db->createCommand()
-			->update($table,array(
-				'rgt' => new CDbExpression('rgt-'.$decrease)
-			),'rgt>:right AND rgt<:fright',array(
-				'right' => $subtreeRoot['rgt'],
-				'fright' => $targetNode['rgt']
-			));
-		
-		$increase =  $targetNode['rgt'] - $subtreeRoot['rgt'] - 1;
-		$this->db->createCommand()
-			->update($table,array(
-				'lft' => new CDbExpression('(-lft)+'.$increase),
-				'level' => new CDbExpression('level'.($targetNode['level']-$subtreeRoot['level'])),
-				'rgt' => new CDbExpression('(-rgt)+'.$increase)
-			),'rgt>=:right AND left<=:left',array(
-				'right' => -$subtreeRoot['right'],
-				'left' => -$subtreeRoot['left']
+				'lft' => new CDbExpression('(-lft)'.$increase),
+				'level' => new CDbExpression('level'.$level),
+				'rgt' => new CDbExpression('(-rgt)'.$increase)
+			),'rgt>=:right AND lft<=:left',array(
+				'right' => -$subtreeRoot['rgt'],
+				'left' => -$subtreeRoot['lft']
 			));
 		return true;
 	}
