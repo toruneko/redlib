@@ -5,7 +5,7 @@
  * Date: 15/5/8 21:27
  * Description: 
  */
-class accessControl extends CFilter{
+class AccessControl extends CFilter{
 
     public function preFilter($filterChain){
         $filterChain->action->controller->filterAccessControl($filterChain);

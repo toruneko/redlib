@@ -179,8 +179,7 @@ class RedDbAuthManager extends RedAuthManager{
 			->where('lft>:left AND rgt<:right',array(
 				'left' => $itemName->getLft(),
 				'right' => $itemName->getRgt()
-			))
-			->queryAll();
+			))->order('lft ASC')->queryAll();
 			
 		$class = new ReflectionClass(get_class($itemName));
 		$objects = array();

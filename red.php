@@ -63,7 +63,7 @@ class Yii extends YiiBase{
 		'RedWebUser' => '/web/auth/RedWebUser.php',
 		'IsAjaxRequest' => '/web/filters/IsAjaxRequest.php',
 		'IsGuest' => '/web/filters/IsGuest.php',
-        'accessControl' => '/web/filters/accessControl.php',
+        'AccessControl' => '/web/filters/AccessControl.php',
 		'RedLoginForm' => '/web/form/RedLoginForm.php',
 		'RedLinkPager' => '/web/widget/pagers/RedLinkPager.php',
 		'RedArrayDataProvider' => '/web/RedArrayDataProvider.php',
