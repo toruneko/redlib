@@ -18,7 +18,7 @@ Yii::createWebApplication($config)->run();
 // YII::createThriftWebApplication($config)->run();
 </pre>
 
-> 你只需要加载 red.php 便可以引入Yii，前提是需要在头文件中定义YII_PATH宏。
+> 你只需要加载 red.php 便可以引入Yii，前提是需要在入口文件中定义YII_PATH宏。
 
 ## packages.php 静态资源管理
 <pre>
@@ -84,7 +84,7 @@ class IsGuest extends CFilter{
 <p>维护了一个没有实际作用的redlib/sae/lib库，一切只是为了代码提示。</p>
 
 ## thrift支持 - Service
-<p>你需要修改头文件</p>
+<p>你需要修改入口文件</p>
 <pre>
 defined('YII_PATH') or define('YII_PATH',dirname(__FILE__).DIRECTORY_SEPARATOR.'framework');
 defined('YII_DEBUG') or define('YII_DEBUG',true);
