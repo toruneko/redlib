@@ -27,14 +27,7 @@ class TApplication extends RedWebApplication{
         if(($ca=$this->createController($route))!==null){
             list($controller,$actionID)=$ca;
             $this->getThrift()->setController($controller);
-            $oldController=$this->_controller;
-            $this->_controller=$controller;
-            $controller->init();
-            $controller->run($actionID);
-            $this->_controller=$oldController;
-        }else{
-            throw new CHttpException(404,Yii::t('yii','Unable to resolve the request "{route}".',
-                array('{route}'=>$route===''?$this->defaultController:$route)));
         }
+        parent::runController($route);
     }
 }
