@@ -100,7 +100,10 @@ class RedSearchEngine extends CApplicationComponent{
 
         arsort($ids);
 
-        return array_keys($ids);
+        return array(
+            'keys' => array_keys($ids),
+            'origin' => $ids
+        );
     }
 
     /**
