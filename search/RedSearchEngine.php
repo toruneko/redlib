@@ -91,9 +91,9 @@ class RedSearchEngine extends CApplicationComponent{
             foreach($indexes as $docId => $index){
                 $tf = $index['times'] / $index['textLen'];
                 if(isset($ids[$docId])){
-                    $ids[$docId] += $tf * $idf * 100;
+                    $ids[$docId] += $tf * $idf;
                 }else{
-                    $ids[$docId] = $tf * $idf * 100;
+                    $ids[$docId] = $tf * $idf;
                 }
             }
         }
