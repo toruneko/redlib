@@ -121,7 +121,7 @@ class RedSearchEngine extends CApplicationComponent{
             $result = $this->db->createCommand()
                 ->select()->from($this->table)
                 ->where('keyword IN (:kw)', array(
-                        'kw' => '"'.join('","',array_keys($segment))).'"'
+                        'kw' => "'".join("','",array_keys($segment)))."'"
                 )->queryAll();
             $dbKeys = array();
             foreach($result as $item){
@@ -186,7 +186,7 @@ class RedSearchEngine extends CApplicationComponent{
             $result = $this->db->createCommand()
                 ->select()->from($this->table)
                 ->where('keyword IN (:kw)', array(
-                        'kw' => '"'.join('","',array_keys($segment))).'"'
+                        'kw' => "'".join("','",array_keys($segment)))."'"
                 )->queryAll();
             $dbKeys = array();
             foreach($result as $item){
