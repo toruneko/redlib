@@ -131,7 +131,6 @@ class RedSearchEngine extends CApplicationComponent{
                 $times = $item->getTimes();
                 $indexes = $item->getIndexes();
 
-                //@TODO
                 if($isNewKeyword = isset($dbKeys[$keyword])){
                     $result = array(
                         'keyword' => $keyword,
