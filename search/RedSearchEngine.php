@@ -118,21 +118,27 @@ class RedSearchEngine extends CApplicationComponent{
 
         $transaction = $this->db->beginTransaction();
         try{
+            $result = $this->db->createCommand()
+                ->select()->from($this->table)
+                ->where('keyword IN (:kw)', array('kw' => join(',',array_keys($segment))))
+                ->queryAll();
+            $dbKeys = array();
+            foreach($result as $item){
+                $dbKeys[$item['keyword']] = $item;
+            }
             foreach($segment as $item){
                 $keyword = $item->getKeyword();
                 $times = $item->getTimes();
                 $indexes = $item->getIndexes();
 
-                $result = $this->db->createCommand()
-                    ->select()->from($this->table)
-                    ->where('keyword=:kw', array('kw' => $keyword))
-                    ->queryRow();
-
-                if($isNewKeyword = empty($result)){
+                //@TODO
+                if($isNewKeyword = isset($dbKeys[$keyword])){
                     $result = array(
                         'keyword' => $keyword,
                         'index' => '[]'
                     );
+                }else{
+                    $result = $dbKeys[$keyword];
                 }
 
                 $index = CJSON::decode($result['index']);
@@ -177,13 +183,20 @@ class RedSearchEngine extends CApplicationComponent{
 
         $transaction = $this->db->beginTransaction();
         try{
+            $result = $this->db->createCommand()
+                ->select()->from($this->table)
+                ->where('keyword IN (:kw)', array('kw' => join(',',array_keys($segment))))
+                ->queryAll();
+            $dbKeys = array();
+            foreach($result as $item){
+                $dbKeys[$item['keyword']] = $item;
+            }
+
             foreach($segment as $item){
                 $keyword = $item->getKeyword();
+                if(!isset($dbKeys[$keyword])) continue;
 
-                $result = $this->db->createCommand()
-                    ->select()->from($this->table)
-                    ->where('keyword=:kw', array('kw' => $keyword))
-                    ->queryRow();
+                $result = $dbKeys[$keyword];
                 $index = CJSON::decode($result['index']);
                 if(isset($index[$docId]))unset($index[$docId]);
 
