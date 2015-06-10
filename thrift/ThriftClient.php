@@ -15,6 +15,8 @@ class ThriftClient extends CApplicationComponent{
     private $_client = null;
     private $_controller = null;
 
+    public $service;
+
     public function init(){
         parent::init();
 
@@ -42,13 +44,13 @@ class ThriftClient extends CApplicationComponent{
         if(is_string($serviceUrl)){
             $this->_client = new $class($this->getOutput($serviceUrl));
         }else {
-            $params = Yii::app()->params;
+            $params = $this->service;
             $key = explode("\\", $class);
             $key = strtolower(str_replace("Client", '', $key[count($key) - 1]));
-            if (!isset($params['thrift'][$key])){
+            if (!isset($params[$key])){
                 throw new CException("ServiceURL Not Found in App Config");
             }
-            $this->_client = new $class($this->getOutput($params['thrift'][$key]));
+            $this->_client = new $class($this->getOutput($params[$key]));
         }
 
         $client = $this;

@@ -27,7 +27,7 @@ class SaeUploadedFile extends RedUploadedFile{
         }
     }
 
-    public function saveAs($file, $domain){
+    public function saveAs($file, $domain = ''){
         if($this->getError()==UPLOAD_ERR_OK){
             if($this->_storage instanceof SaeStorage){
                 if(($url = $this->_storage->upload($domain,$file,$this->getTempName())) !== false){

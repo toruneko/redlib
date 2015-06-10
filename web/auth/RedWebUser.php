@@ -30,7 +30,7 @@ class RedWebUser extends CWebUser{
 	
 	public function getCachedAccess($key){
 		$app = Yii::app();
-		$cache = $app->getCache();
+		$cache = $app->getComponent('cache');
 		if ( $cache !== null ){
 			return $cache->get($key);
 		}else {
@@ -40,7 +40,7 @@ class RedWebUser extends CWebUser{
 	
 	public function cacheAccess($key,$data){
 		$app = Yii::app();
-		$cache = $app->getCache();
+		$cache = $app->getComponent('cache');
 		if ( $cache !== null ){
 			$cache->set($key,$data,$this->accessCacheTimeout);
 		}else {

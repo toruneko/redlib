@@ -10,6 +10,8 @@ class RedAuthOperation extends RedAuthItem{
 	private $_module;
 	private $_controller;
 	private $_action;
+
+    private $_rawdata;
 	
 	/**
 	 * @param IAuthManager|array $params
@@ -21,6 +23,7 @@ class RedAuthOperation extends RedAuthItem{
 		$this->_module = isset($levelInfo['module']) ? $levelInfo['module'] : null;
 		$this->_controller = isset($levelInfo['controller']) ? $levelInfo['controller'] : null;
 		$this->_action = isset($levelInfo['action']) ? $levelInfo['action'] : null;
+        $this->_rawdata = $levelInfo;
 	}
 
 	/**
@@ -82,6 +85,19 @@ class RedAuthOperation extends RedAuthItem{
 		$this->_action = $action;
 		return $this;
 	}
+
+    /**
+     * @param $name
+     * @return null
+     */
+    public function getRawData($name){
+        if(array_key_exists($name, $this->_rawdata)){
+            return $this->_rawdata[$name];
+        }else{
+            return null;
+        }
+    }
+
 	
 	/**
 	 * @see RedAuthItem::getOptions()
