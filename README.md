@@ -116,14 +116,10 @@ class HelloworldServiceController extends TController implements HelloworldServi
 <pre>
 'components'=>array(
     'thrift' => array(
-        'class' => 'ThriftClient'
-    ),
-),
-...
-'params' => array(
-    'thrift' => array(
-        // 服务名 => 服务所在URL
-	'HelloworldService' => 'http://www.toruneko.net/index.php?r=helloworldService'
+        'class' => 'ThriftClient',
+        'service' => array(
+        	'helloworldservice' => 'http://www.toruneko.net/index.php?r=helloworldService'
+        ),
     ),
 ),
 </pre>
