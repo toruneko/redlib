@@ -21,6 +21,6 @@ class RedActiveRecord extends CActiveRecord{
 			'condition' => $conditions,
 			'params' => $params
 		));
-		return $data->_sum;
+		return empty($data->_sum) ? 0 : $data->_sum;
 	}
 }
