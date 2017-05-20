@@ -1,11 +1,13 @@
 <?php
+
 /**
  * File: SaeSearch.php
  * User: daijianhao(toruneko@outlook.com)
  * Date: 14/10/31 09:33
- * Description: 
+ * Description:
  */
-class SaeSearchEngine extends RedSearchEngine{
+class SaeSearchEngine extends RedSearchEngine
+{
     public $disabled_tags = array(
         SaeSegment::POSTAG_ID_UNKNOW,   //未知词
         //连词 30-32
@@ -42,9 +44,9 @@ class SaeSearchEngine extends RedSearchEngine{
         SaeSegment::POSTAG_ID_W_D,      //顿号
         SaeSegment::POSTAG_ID_W_H,      //中缀型符号
         SaeSegment::POSTAG_ID_W_L,      //搭配型标点左部
-        SaeSegment::POSTAG_ID_W_R,	    //搭配型标点右部
-        SaeSegment::POSTAG_ID_W_S,	    //分句尾标点
-        SaeSegment::POSTAG_ID_W_SP,	    //句号
+        SaeSegment::POSTAG_ID_W_R,        //搭配型标点右部
+        SaeSegment::POSTAG_ID_W_S,        //分句尾标点
+        SaeSegment::POSTAG_ID_W_SP,        //句号
         //语气词 160
         SaeSegment::POSTAG_ID_Y,        //语气词
         //动词 173-176
@@ -53,7 +55,7 @@ class SaeSearchEngine extends RedSearchEngine{
         SaeSegment::POSTAG_ID_V_Q,      //趋向动词
         SaeSegment::POSTAG_ID_V_A,      //助动词
         //语素词 190-196
-    	SaeSegment::POSTAG_ID_X,        //语素词
+        SaeSegment::POSTAG_ID_X,        //语素词
         SaeSegment::POSTAG_ID_X_N,      //名词语素
         SaeSegment::POSTAG_ID_X_V,      //动词语素
         SaeSegment::POSTAG_ID_X_S,      //处所词语素
@@ -66,7 +68,8 @@ class SaeSearchEngine extends RedSearchEngine{
         SaeSegment::POSTAG_ID_SPACE,    //空格
     );
 
-    public function init(){
+    public function init()
+    {
         parent::init();
 
         $this->segment = new SaeSegment();

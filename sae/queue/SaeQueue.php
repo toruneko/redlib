@@ -1,21 +1,24 @@
 <?php
+
 /**
  * File: SaeQueue.php
  * User: daijianhao(toruneko@outlook.com)
  * Date: 15/1/15 21:30
  * Description: Sae 队列
  */
-class SaeQueue extends CApplicationComponent{
+class SaeQueue extends CApplicationComponent
+{
     private $queue = null;
     public $name;
     public $accesskey;
     public $secretkey;
 
-    public function init(){
+    public function init()
+    {
         parent::init();
 
         $this->queue = new SaeTaskQueue($this->name);
-        if(!empty($this->accesskey) && !empty($this->secretkey)){
+        if (!empty($this->accesskey) && !empty($this->secretkey)) {
             $this->queue->setAuth($this->accesskey, $this->secretkey);
         }
     }
@@ -28,7 +31,8 @@ class SaeQueue extends CApplicationComponent{
      * @param array $options
      * @return mixed
      */
-    public function addTask($tasks, $postdata = NULL, $prior = false, $options = array()){
+    public function addTask($tasks, $postdata = NULL, $prior = false, $options = array())
+    {
         return $this->queue->addTask($tasks, $postdata, $prior, $options);
     }
 
@@ -36,7 +40,8 @@ class SaeQueue extends CApplicationComponent{
      * 加入队列
      * @return mixed
      */
-    public function push(){
+    public function push()
+    {
         return $this->queue->push();
     }
 
@@ -44,7 +49,8 @@ class SaeQueue extends CApplicationComponent{
      * 剩余长度
      * @return mixed
      */
-    public function leftLength(){
+    public function leftLength()
+    {
         return $this->queue->leftLength();
     }
 
@@ -52,7 +58,8 @@ class SaeQueue extends CApplicationComponent{
      * 当前任务数
      * @return mixed
      */
-    public function curLength(){
+    public function curLength()
+    {
         return $this->queue->curLength();
     }
 
@@ -60,7 +67,8 @@ class SaeQueue extends CApplicationComponent{
      * 错误码
      * @return mixed
      */
-    public function errno(){
+    public function errno()
+    {
         return $this->queue->errno();
     }
 
@@ -68,7 +76,8 @@ class SaeQueue extends CApplicationComponent{
      * 错误信息
      * @return mixed
      */
-    public function errmsg(){
+    public function errmsg()
+    {
         return $this->queue->errmsg();
     }
 }

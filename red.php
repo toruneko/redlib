@@ -5,100 +5,143 @@
  * date:2014-7-12
  * desc: Red
  */
-defined('RED_PATH') or define('RED_PATH',dirname(__FILE__));
+defined('RED_PATH') or define('RED_PATH', dirname(__FILE__));
 
-require(YII_PATH.'/YiiBase.php');
-class Yii extends YiiBase{
-	
-	public static function createRedWebApplication($config=null){
-		return self::createApplication('RedWebApplication',$config);
-	}
-	
-	public static function createSaeWebApplication($config=null){
-		return self::createApplication('SaeWebApplication',$config);
-	}
+require(YII_PATH . '/YiiBase.php');
 
-    public static function createThriftApplication($config = null){
-        return self::createApplication('TApplication',$config);
+class Yii extends YiiBase
+{
+
+    public static function createRedWebApplication($config = null)
+    {
+        return self::createApplication('RedWebApplication', $config);
     }
-	
-	public static function autoload($className,$classMapOnly = false){
-		if(isset(self::$_redClasses[$className])){
-			include(RED_PATH.self::$_redClasses[$className]);
-		}elseif($pos = strrpos($className,'\\')){ // thrift autoload
-            switch(TRUE) {
+
+    public static function createSaeWebApplication($config = null)
+    {
+        return self::createApplication('SaeWebApplication', $config);
+    }
+
+    public static function createAceWebApplication($config = null)
+    {
+        return self::createApplication("AceWebApplication", $config);
+    }
+
+    public static function createBaeWebApplication($config = null)
+    {
+        return self::createApplication("BaeWebApplication",$config);
+    }
+
+    public static function createThriftApplication($config = null)
+    {
+        return self::createApplication('TApplication', $config);
+    }
+
+    public static function registerAutoloader($callback, $append = false)
+    {
+        if ($append) {
+            self::$enableIncludePath = false;
+            spl_autoload_register($callback);
+        } else {
+            spl_autoload_unregister(array('Yii', 'autoload'));
+            spl_autoload_register($callback);
+            spl_autoload_register(array('Yii', 'autoload'));
+        }
+    }
+
+    public static function autoload($className, $classMapOnly = false)
+    {
+        if (isset(self::$_redClasses[$className])) {
+            include(RED_PATH . self::$_redClasses[$className]);
+        } elseif ($pos = strrpos($className, '\\')) { // thrift autoload
+            switch (TRUE) {
                 // service
                 case preg_match('#(.+)(if|client|processor|rest)$#i', $className, $ns):
                 case preg_match('#(.+)_[a-z0-9]+_(args|result)$#i', $className, $ns):
-                    $file = self::getPathOfAlias('ext').'/'.str_replace('\\', '/', $ns[1]) . '.php';
+                    $file = self::getPathOfAlias('ext') . '/' . str_replace('\\', '/', $ns[1]) . '.php';
                     break;
                 // type
                 default:
                     $dir = substr($className, 0, $pos);
-                    $file = self::getPathOfAlias('ext').'/'.str_replace('\\', '/', $dir) . '/Types.php';
+                    $file = self::getPathOfAlias('ext') . '/' . str_replace('\\', '/', $dir) . '/Types.php';
                     break;
             }
-            if(is_file($file)){
+            if (is_file($file)) {
                 include($file);
-            }else{
-                parent::autoload($className,$classMapOnly);
+            } else {
+                parent::autoload($className, $classMapOnly);
             }
-        }else{
-			parent::autoload($className,$classMapOnly);
-		}
-	}
-	
-	private static $_redClasses = array(
-		'RedSecurityManager' => '/base/RedSecurityManager.php',
-		'RedActiveRecord' => '/db/ar/RedActiveRecord.php',
-		'RedAction' => '/web/actions/RedAction.php',
-		'RedAuthAssignment' => '/web/auth/RedAuthAssignment.php',
-		'RedAuthGroup' => '/web/auth/RedAuthGroup.php',
-		'RedAuthItem' => '/web/auth/RedAuthItem.php',
-		'RedAuthManager' => '/web/auth/RedAuthManager.php',
-		'RedAuthOperation' => '/web/auth/RedAuthOperation.php',
-		'RedAuthRole' => '/web/auth/RedAuthRole.php',
-		'RedDbAuthManager' => '/web/auth/RedDbAuthManager.php',
-		'RedUserIdentity' => '/web/auth/RedUserIdentity.php',
-		'RedWebUser' => '/web/auth/RedWebUser.php',
-		'IsAjaxRequest' => '/web/filters/IsAjaxRequest.php',
-		'IsGuest' => '/web/filters/IsGuest.php',
+        } else {
+            parent::autoload($className, $classMapOnly);
+        }
+    }
+
+    private static $_redClasses = array(
+        'RedSecurityManager' => '/base/RedSecurityManager.php',
+        'RedActiveRecord' => '/db/ar/RedActiveRecord.php',
+        'RedDbCommand' => '/db/RedDbCommand.php',
+        'RedAction' => '/web/actions/RedAction.php',
+        'RedAuthAssignment' => '/web/auth/RedAuthAssignment.php',
+        'RedAuthGroup' => '/web/auth/RedAuthGroup.php',
+        'RedAuthItem' => '/web/auth/RedAuthItem.php',
+        'RedAuthManager' => '/web/auth/RedAuthManager.php',
+        'RedAuthOperation' => '/web/auth/RedAuthOperation.php',
+        'RedAuthRole' => '/web/auth/RedAuthRole.php',
+        'RedDbAuthManager' => '/web/auth/RedDbAuthManager.php',
+        'RedUserIdentity' => '/web/auth/RedUserIdentity.php',
+        'RedWebUser' => '/web/auth/RedWebUser.php',
+        'IsAjaxRequest' => '/web/filters/IsAjaxRequest.php',
+        'IsGuest' => '/web/filters/IsGuest.php',
         'AccessControl' => '/web/filters/AccessControl.php',
-		'RedLoginForm' => '/web/form/RedLoginForm.php',
-		'RedLinkPager' => '/web/widget/pagers/RedLinkPager.php',
-		'RedArrayDataProvider' => '/web/RedArrayDataProvider.php',
-		'RedClientScript' => '/web/RedClientScript.php',
-		'RedController' => '/web/RedController.php',
-		'RedHttpRequest' => '/web/RedHttpRequest.php',
-		'RedWebApplication' => '/web/RedWebApplication.php',
-		'RedWebModule' => '/web/RedWebModule.php',
+        'RedLoginForm' => '/web/form/RedLoginForm.php',
+        'RedLinkPager' => '/web/widget/pagers/RedLinkPager.php',
+        'RedArrayDataProvider' => '/web/RedArrayDataProvider.php',
+        'RedClientScript' => '/web/RedClientScript.php',
+        'RedController' => '/web/RedController.php',
+        'RedHttpRequest' => '/web/RedHttpRequest.php',
+        'RedWebApplication' => '/web/RedWebApplication.php',
+        'RedWebModule' => '/web/RedWebModule.php',
         'RedUploadedFile' => '/web/RedUploadedFile.php',
         'RedSearchEngine' => '/search/RedSearchEngine.php',
         'RedSearchSegment' => '/search/RedSearchSegment.php',
         'RedSearchQuery' => '/search/RedSearchQuery.php',
         'IRedSegment' => '/search/segment/IRedSegment.php',
         'RedDNASegment' => '/search/segment/RedDNASegment.php',
-		
-		'SaeStatePersister' => '/sae/base/SaeStatePersister.php',
-		'SaeMemCache' => '/sae/caching/SaeMemCache.php',
+
+        'SaeStatePersister' => '/sae/base/SaeStatePersister.php',
+        'SaeMemCache' => '/sae/caching/SaeMemCache.php',
         'SaeRedisCache' => '/sae/caching/SaeRedisCache.php',
-		'SaeDbCommand' => '/sae/db/SaeDbCommand.php',
-		'SaeDbConnection' => '/sae/db/SaeDbConnection.php',
-		'SaeLogRoute' => '/sae/logging/SaeLogRoute.php',
-		'SaeAssetManager' => '/sae/web/SaeAssetManager.php',
-		'SaeClientScript' => '/sae/web/SaeClientScript.php',
-		'SaeHttpSession' => '/sae/web/SaeHttpSession.php',
-		'SaeUploadedFile' => '/sae/web/SaeUploadedFile.php',
-		'SaeWebApplication' => '/sae/web/SaeWebApplication.php',
+        'SaeDbCommand' => '/sae/db/SaeDbCommand.php',
+        'SaeDbConnection' => '/sae/db/SaeDbConnection.php',
+        'SaeLogRoute' => '/sae/logging/SaeLogRoute.php',
+        'SaeAssetManager' => '/sae/web/SaeAssetManager.php',
+        'SaeHttpSession' => '/sae/web/SaeHttpSession.php',
+        'SaeUploadedFile' => '/sae/web/SaeUploadedFile.php',
+        'SaeWebApplication' => '/sae/web/SaeWebApplication.php',
         'SaeSearchEngine' => '/sae/search/SaeSearchEngine.php',
         'SaeQueue' => '/sae/queue/SaeQueue.php',
         'SaeEmail' => '/sae/utils/SaeEmail.php',
         'SaeTimer' => '/sae/utils/SaeTimer.php',
 
+        'AceMemCache' => '/ace/caching/AceMemCache.php',
+        'AceRedisCache' => '/ace/caching/AceRedisCache.php',
+        'AceHttpSession' => '/ace/web/AceHttpSession.php',
+        'AceWebApplication' => '/ace/web/AceWebApplication.php',
+        'AceUploadedFile' => '/ace/web/AceUploadedFile.php',
+
+        'BaeStatePersister' => '/bae/base/BaeStatePersister.php',
+        'BaeMemCache' => '/bae/caching/BaeMemCache.php',
+        'BaeRedisCache' => '/bae/caching/BaeRedisCache.php',
+        'BaeEmptyCache' => '/bae/caching/BaeEmptyCache.php',
+        'BaeLog' => '/bae/logging/BaeLog.php',
+        'NetLog' => '/bae/logging/NetLog.php',
+        'BaeLogRoute' => '/bae/logging/BaeLogRoute.php',
+        'BaeWebApplication' => '/bae/web/BaeWebApplication.php',
+
         'TApplication' => '/thrift/TApplication.php',
         'TController' => '/thrift/TController.php',
-        'ThriftService'=>'/thrift/ThriftService.php',
-        'ThriftClient'=>'/thrift/ThriftClient.php',
+        'ThriftService' => '/thrift/ThriftService.php',
+        'ThriftClient' => '/thrift/ThriftClient.php',
         'Thrift\Base\TBase' => '/thrift/base/TBase.php',
         'Thrift\Exception\TException' => '/thrift/exception/TException.php',
         'Thrift\Exception\TProtocolException' => '/thrift/exception/TProtocolException.php',
@@ -141,6 +184,7 @@ class Yii extends YiiBase{
         'Thrift\Type\TMessageType' => '/thrift/type/TMessageType.php',
     );
 }
-spl_autoload_unregister(array('YiiBase','autoload'));
-spl_autoload_register(array('Yii','autoload'));
+
+spl_autoload_unregister(array('YiiBase', 'autoload'));
+spl_autoload_register(array('Yii', 'autoload'));
 ?>

@@ -1,11 +1,13 @@
 <?php
+
 /**
  * File: RedUploadedFile.php
  * User: daijianhao@zhubajie.com
  * Date: 14-10-14 16:17
  * Description: 支持后期静态绑定的文件上传工具
  */
-class RedUploadedFile extends CComponent{
+class RedUploadedFile extends CComponent
+{
     static protected $_files;
 
     private $_name;
@@ -49,10 +51,10 @@ class RedUploadedFile extends CComponent{
      */
     public static function getInstanceByName($name)
     {
-        if(null===self::$_files)
+        if (null === self::$_files)
             self::prefetchFiles();
 
-        return isset(self::$_files[$name]) && self::$_files[$name]->getError()!=UPLOAD_ERR_NO_FILE ? self::$_files[$name] : null;
+        return isset(self::$_files[$name]) && self::$_files[$name]->getError() != UPLOAD_ERR_NO_FILE ? self::$_files[$name] : null;
     }
 
     /**
@@ -67,13 +69,13 @@ class RedUploadedFile extends CComponent{
      */
     public static function getInstancesByName($name)
     {
-        if(null===self::$_files)
+        if (null === self::$_files)
             self::prefetchFiles();
 
-        $len=strlen($name);
-        $results=array();
-        foreach(array_keys(self::$_files) as $key)
-            if(0===strncmp($key, $name.'[', $len+1) && self::$_files[$key]->getError()!=UPLOAD_ERR_NO_FILE)
+        $len = strlen($name);
+        $results = array();
+        foreach (array_keys(self::$_files) as $key)
+            if (0 === strncmp($key, $name . '[', $len + 1) && self::$_files[$key]->getError() != UPLOAD_ERR_NO_FILE)
                 $results[] = self::$_files[$key];
         return $results;
     }
@@ -85,7 +87,7 @@ class RedUploadedFile extends CComponent{
      */
     public static function reset()
     {
-        self::$_files=null;
+        self::$_files = null;
     }
 
     /**
@@ -95,12 +97,13 @@ class RedUploadedFile extends CComponent{
     protected static function prefetchFiles()
     {
         self::$_files = array();
-        if(!isset($_FILES) || !is_array($_FILES))
+        if (!isset($_FILES) || !is_array($_FILES))
             return;
 
-        foreach($_FILES as $class=>$info)
+        foreach ($_FILES as $class => $info)
             static::collectFilesRecursive($class, $info['name'], $info['tmp_name'], $info['type'], $info['size'], $info['error']);
     }
+
     /**
      * Processes incoming files for {@link getInstanceByName}.
      * @param string $key key for identifiing uploaded file: class name and subarray indexes
@@ -112,12 +115,10 @@ class RedUploadedFile extends CComponent{
      */
     protected static function collectFilesRecursive($key, $names, $tmp_names, $types, $sizes, $errors)
     {
-        if(is_array($names))
-        {
-            foreach($names as $item=>$name)
-                static::collectFilesRecursive($key.'['.$item.']', $names[$item], $tmp_names[$item], $types[$item], $sizes[$item], $errors[$item]);
-        }
-        else
+        if (is_array($names)) {
+            foreach ($names as $item => $name)
+                static::collectFilesRecursive($key . '[' . $item . ']', $names[$item], $tmp_names[$item], $types[$item], $sizes[$item], $errors[$item]);
+        } else
             self::$_files[$key] = new RedUploadedFile($names, $tmp_names, $types, $sizes, $errors);
     }
 
@@ -130,13 +131,13 @@ class RedUploadedFile extends CComponent{
      * @param integer $size the actual size of the uploaded file in bytes
      * @param integer $error the error code
      */
-    public function __construct($name,$tempName,$type,$size,$error)
+    public function __construct($name, $tempName, $type, $size, $error)
     {
-        $this->_name=$name;
-        $this->_tempName=$tempName;
-        $this->_type=$type;
-        $this->_size=$size;
-        $this->_error=$error;
+        $this->_name = $name;
+        $this->_tempName = $tempName;
+        $this->_type = $type;
+        $this->_size = $size;
+        $this->_error = $error;
     }
 
     /**
@@ -159,18 +160,16 @@ class RedUploadedFile extends CComponent{
      * If true, you will not be able to save the uploaded file again in the current request.
      * @return boolean true whether the file is saved successfully
      */
-    public function saveAs($file,$deleteTempFile=true)
+    public function saveAs($file, $deleteTempFile = true)
     {
-        if($this->_error==UPLOAD_ERR_OK)
-        {
-            if($deleteTempFile)
-                return move_uploaded_file($this->_tempName,$file);
-            elseif(is_uploaded_file($this->_tempName))
+        if ($this->_error == UPLOAD_ERR_OK) {
+            if ($deleteTempFile)
+                return move_uploaded_file($this->_tempName, $file);
+            elseif (is_uploaded_file($this->_tempName))
                 return copy($this->_tempName, $file);
             else
                 return false;
-        }
-        else
+        } else
             return false;
     }
 
@@ -226,7 +225,7 @@ class RedUploadedFile extends CComponent{
      */
     public function getHasError()
     {
-        return $this->_error!=UPLOAD_ERR_OK;
+        return $this->_error != UPLOAD_ERR_OK;
     }
 
     /**

@@ -1,11 +1,13 @@
 <?php
+
 /**
  * File: RedSearchSegment.php
  * User: daijianhao(toruneko@outlook.com)
  * Date: 15/3/30 21:30
  * Description: 分词结果对象
  */
-class RedSearchSegment{
+class RedSearchSegment
+{
 
     /**
      * @var 关键词
@@ -24,7 +26,8 @@ class RedSearchSegment{
      */
     private $indexes = array();
 
-    function __construct($keyword, $class, $index){
+    function __construct($keyword, $class, $index)
+    {
         $this->setKeyword($keyword);
         $this->setClass($class);
         $this->addIndex($index);
@@ -34,71 +37,81 @@ class RedSearchSegment{
     /**
      * @return 关键词
      */
-    public function getKeyword(){
+    public function getKeyword()
+    {
         return $this->keyword;
     }
 
     /**
      * @param 关键词 $keyword
      */
-    public function setKeyword($keyword){
+    public function setKeyword($keyword)
+    {
         $this->keyword = $keyword;
     }
 
     /**
      * @return 词性
      */
-    public function getClass(){
+    public function getClass()
+    {
         return $this->class;
     }
 
     /**
      * @param 词性 $class
      */
-    public function setClass($class){
+    public function setClass($class)
+    {
         $this->class = $class;
     }
 
     /**
      * @return 出现次数
      */
-    public function getTimes(){
+    public function getTimes()
+    {
         return $this->times;
     }
 
     /**
      * @param 出现次数 $times
      */
-    public function setTimes($times){
+    public function setTimes($times)
+    {
         $this->times = $times;
     }
 
     /**
      * @param int $time
      */
-    public function addTimes($time = 1){
+    public function addTimes($time = 1)
+    {
         $this->times += $time;
     }
 
     /**
      * @return 偏移量数组
      */
-    public function getIndexes(){
+    public function getIndexes()
+    {
         return $this->indexes;
     }
 
     /**
      * @param 偏移量数组 $indexes
      */
-    public function setIndexes($indexes){
-        if(is_array($indexes))
+    public function setIndexes($indexes)
+    {
+        if (is_array($indexes))
             $this->indexes = $indexes;
     }
 
     /**
      * @param 偏移量 $index
      */
-    public function addIndex($index){
+    public function addIndex($index)
+    {
         $this->indexes[] = $index;
     }
 }

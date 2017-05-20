@@ -1,14 +1,17 @@
 <?php
+
 /**
  * File: SaeTimer.php
  * User: daijianhao(toruneko@outlook.com)
  * Date: 15/1/15 21:53
  * Description: 计数器
  */
-class SaeTimer extends CApplicationComponent{
+class SaeTimer extends CApplicationComponent
+{
     private $counter;
 
-    public function init(){
+    public function init()
+    {
         parent::init();
 
         $this->counter = new SaeCounter();
@@ -21,7 +24,8 @@ class SaeTimer extends CApplicationComponent{
      * @param int $value 计数器初始值，默认值为0
      * @return bool 成功返回true，失败返回false（计数器已存在返回false）
      */
-    public function create($name, $value = 0){
+    public function create($name, $value = 0)
+    {
         return $this->counter->create($name, $value);
     }
 
@@ -31,7 +35,8 @@ class SaeTimer extends CApplicationComponent{
      * @param string $name 计数器名称
      * @return bool 成功返回true，失败返回false（计数器不存在返回false）
      */
-    public function remove($name){
+    public function remove($name)
+    {
         return $this->counter->remove($name);
     }
 
@@ -41,7 +46,8 @@ class SaeTimer extends CApplicationComponent{
      * @param string $name 计数器名称
      * @return bool 存在返回true，不存在返回false
      */
-    public function exists($name){
+    public function exists($name)
+    {
         return $this->counter->exists($name);
     }
 
@@ -50,7 +56,8 @@ class SaeTimer extends CApplicationComponent{
      *
      * @return array|bool成功返回数组array，失败返回false
      */
-    public function listAll(){
+    public function listAll()
+    {
         return $this->counter->listAll();
     }
 
@@ -59,7 +66,8 @@ class SaeTimer extends CApplicationComponent{
      *
      * @return int|bool成功返回计数器个数，失败返回false
      */
-    public function length(){
+    public function length()
+    {
         return $this->counter->length();
     }
 
@@ -69,7 +77,8 @@ class SaeTimer extends CApplicationComponent{
      * @param string $name 计数器名称
      * @return int|bool成功返回该计数器的值，失败返回false
      */
-    public function get($name){
+    public function get($name)
+    {
         return $this->counter->get($name);
     }
 
@@ -80,7 +89,8 @@ class SaeTimer extends CApplicationComponent{
      * @param int $value 计数器的值
      * @return bool 成功返回true，失败返回false
      */
-    public function set($name, $value){
+    public function set($name, $value)
+    {
         return $this->counter->set($name, $value);
     }
 
@@ -90,7 +100,8 @@ class SaeTimer extends CApplicationComponent{
      * @param array $names 计数器名称数组，array($name1, $name2, ...)
      * @return array|bool成功返回关联数组，失败返回false
      */
-    public function mget($names){
+    public function mget($names)
+    {
         return $this->counter->mget($names);
     }
 
@@ -99,7 +110,8 @@ class SaeTimer extends CApplicationComponent{
      *
      * @return array|bool成功返回关联数组，失败返回false
      */
-    public function getAll(){
+    public function getAll()
+    {
         return $this->counter->getall();
     }
 
@@ -110,7 +122,8 @@ class SaeTimer extends CApplicationComponent{
      * @param int $value 计数器增加值
      * @return int|bool成功返回该计数器的当前值，失败返回false（计数器不存在返回false）
      */
-    public function incr($name, $value = 1){
+    public function incr($name, $value = 1)
+    {
         return $this->counter->incr($name, $value);
     }
 
@@ -121,7 +134,8 @@ class SaeTimer extends CApplicationComponent{
      * @param int $value 计数器减少值
      * @return int|bool成功返回该计数器的当前值，失败返回false（计数器不存在返回false）
      */
-    public function decr($name, $value = 1){
+    public function decr($name, $value = 1)
+    {
         return $this->counter->decr($name, $value);
     }
 }

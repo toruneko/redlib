@@ -1,10 +1,11 @@
 <?php
+
 /**
  * @file: SaeHttpSession.php
  * @author: Toruneko<toruneko@outlook.com>
  * @date: 2014-4-11
- * @desc: 
+ * @desc:
  */
-class SaeHttpSession extends CHttpSession{
-	
+class SaeHttpSession extends CHttpSession
+{
 }
